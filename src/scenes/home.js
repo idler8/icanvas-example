@@ -27,7 +27,7 @@ class Board extends BoxModal {
 		this.addChild(this.Share, this.Friend, this.World, Texture);
 		this.World.zIndex = this.Friend.zIndex = -1;
 		this.Share.touchTap = () => {
-			GAME.Reward('Board');
+			console.log('分享');
 		};
 		this.Friend.touchTap = () => {
 			this.Friend.State = true;
@@ -105,7 +105,7 @@ export default class Home extends GAME.Component {
 		};
 		new GAME.Component.Text({ size: 6, value: '分享' }).setParent(this.Share);
 		this.Share.touchTap = () => {
-			GAME.Reward('Home');
+			console.log('分享');
 		};
 		let Auido = new GAME.Component.Text({ size: 6 });
 		Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开').setParent(this.Audio);
