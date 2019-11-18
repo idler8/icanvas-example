@@ -19,7 +19,25 @@ npm run serve
 #浏览器打开 http://localhost:8080 以手机模式查看游戏界面
 ```
 ### 进行代码开发
-
+- 编译文件夹 build/ 放置多种游戏编译目标逻辑
+  - 项目配置 build/project.json 默认映射为全局ENV.project变量
+  - 开发 build/serve.js 编译为浏览器实时开发模式
+  - 微信 build/wxgame.js 编译为微信包
+  - 浏览器 build/web.js 编译为浏览器包
+- 核心文件夹 core/ 按需设置多种游戏兼容核心
+  - 浏览器 core/web.js 包含多种浏览器兼容功能
+  - 微信 core/wxgame.js 包含多种微信兼容功能
+  - 微信开放域 core/open.js 包含多种微信开放域专用功能
+- 资源文件夹 resource/ 可以储存各种资源
+  - 本地资源 resource/local 编译后储存在本地项目resource下
+  - 远程资源 resource/remote 编译时上传到配置的远程路径内
+- 代码文件夹 src/ 编辑游戏逻辑
+  - 入口脚本文件 index.js 加载游戏启动逻辑
+  - 脚本文件夹 scripts/ 存放各种业务逻辑脚本
+  - 场景文件夹 scenes/ 存放多个游戏顶级场景
+  - 组件文件夹 components/ 存放游戏界面可复用组件
+- 代码文件夹 src.open/ 编辑微信开放域界面
+  - 内部结构同上
 ### 进行项目打包
 ```bash
 #完整打包命令
