@@ -1,0 +1,27 @@
+{
+	"name": "",
+	"qiniu": {
+		"Url": "",
+		"Key": "",
+		"Secret": "",
+		"Bucket": ""
+	},
+	"wxgame": {
+		"game.json": {
+			"deviceOrientation": "portrait",
+			"openDataContext": "open",
+			"navigateToMiniProgramAppIdList": []
+		},
+		"project.config.json": {
+			"compileType": "game",
+			"setting": {
+				"es6": true,
+				"postcss": true,
+				"minified": true,
+				"urlCheck": false,
+				"uglifyFileName": true
+			},
+			"appid": ""
+		}
+	}
+}
