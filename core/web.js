@@ -58,7 +58,11 @@ class GAME {
 		Core.UtilCanvas.Image.GetImage = Core.ComponentTexture.GetImage = image => {
 			return typeof image == 'object' ? image : this.Image.get(image);
 		};
-		Core['ontouchstart' in window ? 'UtilWebTouchListen' : 'UtilWebMouseListen'](this.Context.canvas, this.Touch);
+		if ('ontouchstart' in window) {
+			Core.UtilWebTouchListen(this.Context.canvas, this.Touch);
+		} else {
+			Core.UtilWebMouseListen(this.Context.canvas, this.Touch);
+		}
 	}
 	SetSize(x, y) {
 		this.Pos.width = x;
