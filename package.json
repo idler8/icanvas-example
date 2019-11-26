@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"author": "潘丽敏",
 	"scripts": {
 		"build": "node ./build/initialize.js",

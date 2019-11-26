@@ -82,7 +82,7 @@ export function Remote(url) {
 	});
 }
 export function Listen(event = 'preLoadProgress', endEvent = 'preLoaded') {
-	let Progress = { P1: 100, T1: 100, V1: 0.75 * 0.7, P2: 0, T2: 1, V2: 0.75 * 0.3, P3: 5, T3: 5, V3: 0.25 };
+	let Progress = { P1: 100, T1: 100, V1: 0.75 * 0.7, P2: 1, T2: 1, V2: 0.75 * 0.3, P3: 5, T3: 5, V3: 0.25 };
 	let Compute = function() {
 		let Total = (Progress.P1 / Progress.T1) * Progress.V1 + (Progress.P2 / Progress.T2) * Progress.V2 + (Progress.P3 / Progress.T3) * Progress.V3;
 		if (Total > 100) Total = 100;
