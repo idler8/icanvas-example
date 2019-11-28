@@ -68,22 +68,22 @@ class Board extends BoxModal {
 export default class Home extends GAME.Component {
 	Background = new GAME.Component.Texture('play/bg').setSize(GAME.Pos.width, GAME.Pos.height);
 	Play = new GAME.Component.Texture('play/Common')
-		.setFrame(120, 6, 39, 24)
+		.setClip(120, 6, 39, 24)
 		.setAnchorSize()
 		.setScale(5, 5)
 		.setPosition(GAME.Pos.center - 100, GAME.Pos.middle);
 	Rank = new GAME.Component.Texture('play/Common')
-		.setFrame(120, 6, 39, 24)
+		.setClip(120, 6, 39, 24)
 		.setAnchorSize()
 		.setScale(5, 5)
 		.setPosition(GAME.Pos.center + 100, GAME.Pos.middle);
 	Share = new GAME.Component.Texture('play/Common')
-		.setFrame(120, 6, 39, 24)
+		.setClip(120, 6, 39, 24)
 		.setAnchorSize()
 		.setScale(5, 5)
 		.setPosition(GAME.Pos.center - 100, GAME.Pos.middle + 120);
 	Audio = new GAME.Component.Texture('play/Common')
-		.setFrame(120, 6, 39, 24)
+		.setClip(120, 6, 39, 24)
 		.setAnchorSize()
 		.setScale(5, 5)
 		.setPosition(GAME.Pos.center + 100, GAME.Pos.middle + 120);

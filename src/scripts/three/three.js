@@ -13768,7 +13768,7 @@ function WebVRManager( renderer ) {
 		if ( value !== undefined ) device = value;
 		animation.setContext( value );
 	};
-	this.setFramebufferScaleFactor = function ( value ) {
+	this.setClipbufferScaleFactor = function ( value ) {
 		framebufferScaleFactor = value;
 	};
 	this.setReferenceSpaceType = function ( value ) {
@@ -13866,8 +13866,8 @@ function WebVRManager( renderer ) {
 		}
 	};
 	// DEPRECATED
-	this.setFrameOfReferenceType = function () {
-		console.warn( 'THREE.WebVRManager: setFrameOfReferenceType() has been deprecated.' );
+	this.setClipOfReferenceType = function () {
+		console.warn( 'THREE.WebVRManager: setClipOfReferenceType() has been deprecated.' );
 	};
 }
 Object.assign( WebVRManager.prototype, EventDispatcher.prototype );
@@ -13917,7 +13917,7 @@ function WebXRManager( renderer, gl ) {
 		}
 	}
 	function onSessionEnd() {
-		renderer.setFramebuffer( null );
+		renderer.setClipbuffer( null );
 		renderer.setRenderTarget( renderer.getRenderTarget() ); // Hack #15830
 		animation.stop();
 		scope.dispatchEvent( { type: 'sessionend' } );
@@ -13928,7 +13928,7 @@ function WebXRManager( renderer, gl ) {
 		animation.start();
 		scope.dispatchEvent( { type: 'sessionstart' } );
 	}
-	this.setFramebufferScaleFactor = function ( /* value */ ) {
+	this.setClipbufferScaleFactor = function ( /* value */ ) {
 		// framebufferScaleFactor = value;
 	};
 	this.setReferenceSpaceType = function ( value ) {
@@ -14002,7 +14002,7 @@ function WebXRManager( renderer, gl ) {
 		if ( pose !== null ) {
 			var views = pose.views;
 			var baseLayer = session.renderState.baseLayer;
-			renderer.setFramebuffer( baseLayer.framebuffer );
+			renderer.setClipbuffer( baseLayer.framebuffer );
 			for ( var i = 0; i < views.length; i ++ ) {
 				var view = views[ i ];
 				var viewport = baseLayer.getViewport( view );
@@ -14050,8 +14050,8 @@ function WebXRManager( renderer, gl ) {
 	this.setDevice = function () {
 		console.warn( 'THREE.WebXRManager: setDevice() has been deprecated.' );
 	};
-	this.setFrameOfReferenceType = function () {
-		console.warn( 'THREE.WebXRManager: setFrameOfReferenceType() has been deprecated.' );
+	this.setClipOfReferenceType = function () {
+		console.warn( 'THREE.WebXRManager: setClipOfReferenceType() has been deprecated.' );
 	};
 	this.submitFrame = function () {};
 }
@@ -15489,7 +15489,7 @@ function WebGLRenderer( parameters ) {
 			( material.isShaderMaterial && material.lights === true );
 	}
 	//
-	this.setFramebuffer = function ( value ) {
+	this.setClipbuffer = function ( value ) {
 		if ( _framebuffer !== value && _currentRenderTarget === null ) _gl.bindFramebuffer( 36160, value );
 		_framebuffer = value;
 	};
