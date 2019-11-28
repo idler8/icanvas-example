@@ -71,7 +71,7 @@ export default class Database {
 		} catch (e) {
 			return this;
 		}
-		Object.keys(Data).forEach(key => this.Table(key).Set(Data[key]));
+		Object.keys(Data).forEach(key => this.Map(key).Set(Data[key]));
 		return this;
 	}
 }

@@ -1,8 +1,10 @@
-//载入项目配置
-GAME.Api.Req.baseURL = ENV.input.mode == 'production' ? '生产地址' : '开发地址'; //网络请求根地址
+// 全局数据存储
+import Database from './scripts/database.js';
+GAME.Data = new Database('global_' + ENV.input.mode);
+//TODO 开放域等原生功能
 import * as Native from './scripts/native.js';
 GAME.Native = Native; //TODO 游戏圈、Banner、更多游戏
-GAME.Native.Shared.SetSize(750, 750 / GAME.Api.System.ratio); //TODO 开放域
+GAME.Native.Shared.SetSize(750, 750 / GAME.Api.System.ratio);
 //载入场景
 import LoadScene from './scenes/load.js';
 import HomeScene from './scenes/home.js';
