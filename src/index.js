@@ -1,8 +1,10 @@
 // 全局数据库
+import VConsole from 'vconsole';
+var vConsole = new VConsole();
 import Database from './scripts/database.js';
 GAME.Data = new Database('global_' + ENV.input.mode);
 // 游戏设置
-GAME.Data.Map('Setting').Set({ Audio: true, Shock: true });
+GAME.Data.Map('Setting').Merge({ Audio: true, Shock: true });
 // TODO 游戏圈、Banner、更多游戏
 import * as Native from './scripts/native.js';
 GAME.Native = Native;
@@ -38,7 +40,7 @@ Promise.all([
 			GAME.Audio.preLoad(GAME.Utils.LoadMap(res.resourceMap.audio, res.assetsUrl + '/audio/', '', ['mp3'])), //载入远程音频
 		]);
 	}),
-	Promise.resolve(), //用户登陆
+	// Promise.resolve(), //用户登陆
 ])
 	.then(() => GAME.Director.Go('Home')) //显示主要界面
 	.catch(e => {

@@ -53,6 +53,8 @@ class Bullet extends GAME.Component.Texture {
 			if (!GAME.Collsion.InComponent(enemys[i], this.position)) continue;
 			enemys[i].visible = false;
 			this.visible = false;
+			GAME.Audio.pool('boom');
+			//TODO 本位置爆炸
 		}
 	}
 }
@@ -63,6 +65,7 @@ class Bullets extends GAME.Component {
 		bullet.x = position.x;
 		bullet.y = position.y - 35;
 		bullet.visible = true;
+		GAME.Audio.pool('bullet');
 	}
 	Collsion(enemys) {
 		for (let i = 0; i < this.children.length; i++) {
@@ -70,8 +73,20 @@ class Bullets extends GAME.Component {
 		}
 	}
 }
+class Background extends GAME.Component {
+	Background1 = new GAME.Component.Texture('play/bg').setSize(GAME.Pos.width, GAME.Pos.height);
+	Background2 = new GAME.Component.Texture('play/bg').setSize(GAME.Pos.width, GAME.Pos.height).setPosition(0, -GAME.Pos.height);
+	constructor() {
+		super();
+		this.addChild(this.Background1, this.Background2);
+	}
+	preUpdate() {
+		this.y++;
+		if (this.y >= GAME.Pos.height) this.y = 0;
+	}
+}
 export default class Play extends GAME.Component {
-	Background = new GAME.Component.Texture('play/bg').setSize(GAME.Pos.width, GAME.Pos.height);
+	Background = new Background();
 	Player = new GAME.Component.Texture('play/hero').setAnchorSize().setPosition(GAME.Pos.center, GAME.Pos.height - 200);
 	Enemys = new Enemys();
 	Bullets = new Bullets();
@@ -92,9 +107,11 @@ export default class Play extends GAME.Component {
 		this.Player.y = touch.moveY;
 	}
 	create() {
+		GAME.Audio.channel('background', 'bgm');
 		GAME.Touch.on('touchMove', this.TouchMove, this);
 	}
 	destroy() {
+		GAME.Audio.channel('background');
 		GAME.Touch.off('touchMove', this.TouchMove, this);
 		this.Animation.kill();
 		this.Level.kill();
