@@ -1,5 +1,7 @@
 # **iCanvas开发实战案例**
 
+## 预览
+[Web版在线试玩](https://idler8.github.io/icanvas-example/)
 ## 安装
 ```bash
 #克隆项目到文件夹二级目录
