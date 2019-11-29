@@ -1,9 +1,11 @@
-// 全局数据存储
+// 全局数据库
 import Database from './scripts/database.js';
 GAME.Data = new Database('global_' + ENV.input.mode);
-//TODO 开放域等原生功能
+// 游戏设置
+GAME.Data.Map('Setting').Set({ Audio: true, Shock: true });
+// TODO 游戏圈、Banner、更多游戏
 import * as Native from './scripts/native.js';
-GAME.Native = Native; //TODO 游戏圈、Banner、更多游戏
+GAME.Native = Native;
 GAME.Native.Shared.SetSize(750, 750 / GAME.Api.System.ratio);
 //载入场景
 import LoadScene from './scenes/load.js';
@@ -24,6 +26,9 @@ Loader.Listen();
 Promise.all([
 	Promise.all([
 		GAME.Image.preLoad(GAME.Utils.LoadMap(ENV.dynamic.resourceMap.local, 'resource/local/', '', ['png', 'jpg'])), //载入本地图片
+		GAME.Data.Map('Setting')
+			.GetStorage(true)
+			.then(() => (GAME.Audio.mute = !GAME.Data.Map('Setting').Get('Audio'))), //读取声音配置
 	]).then(() => GAME.Director.Go('Load')),
 	Loader.Remote(ENV.dynamic.assetsUrl || 'resource/remote').then(res => {
 		console.log('得到远程资源路径', res);

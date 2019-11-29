@@ -75,7 +75,7 @@ export class ArrTable extends Table {
 	}
 	Data = [];
 	Merge(Data) {
-		this.Data.concat(Data);
+		this.Data = this.Data.concat(Data);
 		return this;
 	}
 	MergeTo(Data) {
