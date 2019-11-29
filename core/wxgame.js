@@ -13,10 +13,12 @@ class Director extends Core.ComponentBase {
 	Scenes = {}; //场景
 	// Directors = {}; //子导演
 	CurrentScene = null; //当前场景
-	GoScene(Type, options) {
+	GoScene(Type) {
 		this.removeChild(this.CurrentScene);
 		this.CurrentScene = this.Scenes[Type] ? new this.Scenes[Type]() : null;
-		if (this.CurrentScene) this.addChildAt(this.CurrentScene, 0);
+		if (this.CurrentScene) {
+			this.addChildAt(this.CurrentScene, 0);
+		}
 		return this;
 	}
 	Go = this.GoScene;
@@ -31,23 +33,18 @@ class GAME {
 	Api = {
 		Canvas: Core.ApiWxgameCanvas,
 		System: Core.ApiWxgameSystem(),
-		Req: new Core.ApiWxgameRequest(),
+		Req: Core.ApiWxgameRequest(),
 		Storage: Core.ApiWxgameStorage,
 		Font: Core.UtilWxgameVary('loadFont', wx, 2),
 		Login: Core.ApiWxgameLogin(),
 	};
 	Component = Core.ComponentBase;
-	Math = {
-		Vector2: Core.MathVector2,
-		Time: Core.MathTime,
-		Random: Core.MathRandom,
-		Matrix3: Core.MathMatrix3,
-	};
+	Math = { Vector2: Core.MathVector2, Time: Core.MathTime, Random: Core.MathRandom, Matrix3: Core.MathMatrix3 };
 	Audio = new Core.ResourceWxgameAudio();
 	Image = new Core.ResourceWxgameImage();
 	Event = new Eventemitter3();
 	Pos = new Core.MathPosition();
-	Utils = { LoadMap: Core.UtilLoaderMap, RMap: Core.UtilRecursiveMap };
+	Utils = { LoadMap: Core.UtilLoaderMap };
 	Options = {};
 
 	Context = Core.ApiWxgameCanvas('main').getContext('2d');
@@ -64,7 +61,7 @@ class GAME {
 			return typeof image == 'object' ? image : this.Image.get(image);
 		};
 		Core.UtilWxgameTouchListen(this.Touch);
-		wx.onShow(res => (this.Audio.mute = this.Audio.mute)); //进入游戏后检查背景播放状态
+		wx.onShow(res => (this.Audio.mute = this.Audio.mute));
 	}
 	SetSize(x, y) {
 		this.Pos.width = x;

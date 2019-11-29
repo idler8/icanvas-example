@@ -15,7 +15,7 @@ class Director extends Core.ComponentBase {
 	GoScene(Type) {
 		this.removeChild(this.CurrentScene);
 		this.CurrentScene = this.Scenes[Type] ? new this.Scenes[Type]() : null;
-		if (this.CurrentScene) this.addChildAt(this.CurrentScene, 0);
+		this.addChildAt(this.CurrentScene, 0);
 		return this;
 	}
 	Go = this.GoScene;

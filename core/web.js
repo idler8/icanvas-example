@@ -1,4 +1,5 @@
 import * as Core from '@icanvas/core';
+import axios from 'axios';
 import Eventemitter3 from 'eventemitter3';
 import { TweenLite, TimelineMax, Linear } from 'gsap/TweenMax';
 TweenLite.defaultEase = Linear.easeNone;
@@ -18,7 +19,7 @@ class Director extends Core.ComponentBase {
 		console.log('场景切换', Type);
 		this.removeChild(this.CurrentScene);
 		this.CurrentScene = this.Scenes[Type] ? new this.Scenes[Type]() : null;
-		if (this.CurrentScene) this.addChildAt(this.CurrentScene, 0);
+		this.addChildAt(this.CurrentScene, 0);
 		return this;
 	}
 	Go = this.GoScene;
@@ -32,17 +33,22 @@ class GAME {
 	Api = {
 		Canvas: Core.ApiWebCanvas,
 		System: Core.ApiWebSystem(),
-		Req: new Core.ApiWebRequest(),
-		Storage: Core.ApiWebStorage,
+		Req: axios,
 		Font: Core.ApiWebFont,
+		Storage: Core.ApiWebStorage,
 	};
 	Component = Core.ComponentBase;
-	Math = { Vector2: Core.MathVector2, Time: Core.MathTime, Random: Core.MathRandom, Matrix3: Core.MathMatrix3 };
+	Math = {
+		Vector2: Core.MathVector2,
+		Time: Core.MathTime,
+		Random: Core.MathRandom,
+		Matrix3: Core.MathMatrix3,
+	};
 	Audio = new Core.ResourceWebAudio();
 	Image = new Core.ResourceWebImage();
 	Event = new Eventemitter3();
 	Pos = new Core.MathPosition();
-	Utils = { LoadMap: Core.UtilLoaderMap, RMap: Core.UtilRecursiveMap };
+	Utils = { LoadMap: Core.UtilLoaderMap };
 	Options = {};
 
 	Context = Core.ApiWebCanvas('main').getContext('2d');
@@ -63,6 +69,7 @@ class GAME {
 		} else {
 			Core.UtilWebMouseListen(this.Context.canvas, this.Touch);
 		}
+		// Core['ontouchstart' in window ? 'UtilWebTouchListen' : 'UtilWebMouseListen'](this.Context.canvas, this.Touch);
 	}
 	SetSize(x, y) {
 		this.Pos.width = x;
