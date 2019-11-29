@@ -34,7 +34,7 @@ function create(project, input, dynamic) {
 						],
 				  })
 				: copy({ targets: [{ src: 'resource/remote/', dest: '../web/resource/' }] }),
-			resolve({ jsnext: true, preferBuiltins: true, browser: true }),
+			resolve({ preferBuiltins: true, browser: true }),
 			json(),
 			babel({
 				babelrc: false,

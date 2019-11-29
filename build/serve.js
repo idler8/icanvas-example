@@ -22,7 +22,7 @@ function create(project, input, dynamic) {
 		context: 'null',
 		moduleContext: 'null',
 		plugins: [
-			resolve({ jsnext: true, preferBuiltins: true, browser: true }),
+			resolve({ preferBuiltins: true, browser: true }),
 			json(),
 			babel({
 				babelrc: false,
