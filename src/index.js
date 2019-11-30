@@ -5,10 +5,9 @@ import Database from './scripts/database.js';
 GAME.Data = new Database('global_' + ENV.input.mode);
 // 游戏设置
 GAME.Data.Map('Setting').Merge({ Audio: true, Shock: true });
-// TODO 游戏圈、Banner、更多游戏
-import * as Native from './scripts/native.js';
-GAME.Native = Native;
-GAME.Native.Shared.SetSize(750, 750 / GAME.Api.System.ratio);
+//开放域
+import Shared from './scripts/wechat/shared.js';
+GAME.Shared = Shared.SetSize(750, 750 / GAME.Api.System.ratio);
 //载入场景
 import LoadScene from './scenes/load.js';
 import HomeScene from './scenes/home.js';
@@ -34,7 +33,7 @@ Promise.all([
 	]).then(() => GAME.Director.Go('Load')),
 	Loader.Remote(ENV.dynamic.assetsUrl || 'resource/remote').then(res => {
 		console.log('得到远程资源路径', res);
-		GAME.Native.Shared.Send({ resource: GAME.Utils.LoadMap(res.resourceMap.rank, res.assetsUrl + '/rank/', '', ['png', 'jpg']) });
+		GAME.Shared.Send({ resource: GAME.Utils.LoadMap(res.resourceMap.rank, res.assetsUrl + '/rank/', '', ['png', 'jpg']) });
 		return Promise.all([
 			GAME.Image.preLoad(GAME.Utils.LoadMap(res.resourceMap, res.assetsUrl + '/', '', ['png', 'jpg'])), //载入远程图片
 			GAME.Audio.preLoad(GAME.Utils.LoadMap(res.resourceMap.audio, res.assetsUrl + '/audio/', '', ['mp3'])), //载入远程音频

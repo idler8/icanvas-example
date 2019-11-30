@@ -23,7 +23,7 @@ class Board extends BoxModal {
 	Share = new Board.Button({ color: '#926639', size: 45, value: '分享' }).setPosition(-109, 460);
 	constructor() {
 		super(670, 800, 0).AddClose();
-		let Texture = GAME.Native.Shared.Texture.setAnchorSize();
+		let Texture = GAME.Shared.Texture.setAnchorSize();
 		this.addChild(this.Share, this.Friend, this.World, Texture);
 		this.World.zIndex = this.Friend.zIndex = -1;
 		this.Share.touchTap = () => {
@@ -32,7 +32,7 @@ class Board extends BoxModal {
 		this.Friend.touchTap = () => {
 			this.Friend.State = true;
 			this.World.State = false;
-			GAME.Native.Shared.Send({
+			GAME.Shared.Send({
 				friend: { sorts: ['SaveKey2'], keys: { ['HighScore' + ENV.input.mode]: 'SaveKey2' } },
 				scene: 'Board',
 				board: { sort: 'SaveKey2', keys: ['SaveKey2'] },
@@ -44,7 +44,7 @@ class Board extends BoxModal {
 			// Promise.resolve((this.touchChildren = false))
 			// 	.then(() => GAME.Server.SelectWorldList(GAME.User.Map('ServerInfo').Data))
 			// 	.then(data => {
-			// 		GAME.Native.Shared.Send({
+			// 		GAME.Shared.Send({
 			// 			merge: { data, sorts: ['SaveKey1'], keys: { frequency: 'SaveKey1' } },
 			// 			scene: 'Board',
 			// 			board: { sort: 'SaveKey1', keys: ['SaveKey1'] },
@@ -81,7 +81,7 @@ class Board extends BoxModal {
 			.then(() => this.World.touchTap());
 	}
 	destroy() {
-		GAME.Native.Shared.Send({ scene: 'Null' });
+		GAME.Shared.Send({ scene: 'Null' });
 		if (ENV.input.target != 'wxgame') return;
 		if (GAME.Api.Login.GetUserInfo.Abort) GAME.Api.Login.GetUserInfo.Abort();
 	}
