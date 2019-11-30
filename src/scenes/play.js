@@ -54,7 +54,7 @@ class Bullet extends GAME.Component.Texture {
 			enemys[i].visible = false;
 			this.visible = false;
 			GAME.Audio.pool('boom');
-			//TODO 本位置爆炸
+			GAME.Event.emit('Boom', this.position);
 		}
 	}
 }
@@ -85,15 +85,43 @@ class Background extends GAME.Component {
 		if (this.y >= GAME.Pos.height) this.y = 0;
 	}
 }
+class Boom extends GAME.Component.Texture {
+	State = 20;
+	Textures = Array.apply(null, { length: 19 }).map((_, i) => 'play/explosion' + (i + 1));
+	constructor() {
+		super(null, { scale: 5 });
+	}
+	preUpdate() {
+		if (this.State >= this.Textures.length) return;
+		this.State++;
+		this.setTexture(this.Textures[this.State]).setAnchorSize();
+	}
+}
+class Booms extends GAME.Component {
+	create() {
+		GAME.Event.on('Boom', this.Boom, this);
+	}
+	destroy() {
+		GAME.Event.off('Boom', this.Boom, this);
+	}
+	Boom(vector) {
+		console.log('vector', vector);
+		let boom = this.children.find(b => b.State >= b.Textures.length);
+		if (!boom) this.addChild((boom = new Boom()));
+		boom.position.setToArray(vector);
+		boom.State = 0;
+	}
+}
 export default class Play extends GAME.Component {
 	Background = new Background();
 	Player = new GAME.Component.Texture('play/hero').setAnchorSize().setPosition(GAME.Pos.center, GAME.Pos.height - 200);
 	Enemys = new Enemys();
 	Bullets = new Bullets();
+	Booms = new Booms();
 	Animation = new GAME.TWEEN({ repeat: -1, repeatDelay: 0.2 }).addCallback(() => this.Bullets.Send(this.Player.position));
 	Level = new GAME.TWEEN({ repeat: -1, repeatDelay: 30 }).addCallback(() => this.Enemys.Total++);
 	constructor() {
-		super().addChild(this.Background, this.Player, this.Enemys, this.Bullets);
+		super().addChild(this.Background, this.Player, this.Enemys, this.Bullets, this.Booms);
 		new GAME.Component().setPosition(-this.Player.width / 3, -this.Player.height / 3).setParent(this.Player);
 		new GAME.Component().setPosition(this.Player.width / 3, -this.Player.height / 3).setParent(this.Player);
 	}
@@ -102,17 +130,28 @@ export default class Play extends GAME.Component {
 		this.Enemys.Collsion({ x: this.Player.x + 60, y: this.Player.y - 40 });
 		this.Bullets.Collsion(this.Enemys.children);
 	}
+	TouchStart(touch) {
+		if (GAME.Collsion.InComponent(this.Player, { x: touch.startX, y: touch.startY })) this.Player.Moving = true;
+	}
 	TouchMove(touch) {
+		if (!this.Player.Moving) return;
 		this.Player.x = touch.moveX;
 		this.Player.y = touch.moveY;
 	}
+	TouchEnd(touch) {
+		this.Player.Moving = false;
+	}
 	create() {
 		GAME.Audio.channel('background', 'bgm');
+		GAME.Touch.on('touchStart', this.TouchStart, this);
 		GAME.Touch.on('touchMove', this.TouchMove, this);
+		GAME.Touch.on('touchEnd', this.TouchEnd, this);
 	}
 	destroy() {
 		GAME.Audio.channel('background');
+		GAME.Touch.off('touchStart', this.TouchStart, this);
 		GAME.Touch.off('touchMove', this.TouchMove, this);
+		GAME.Touch.off('touchEnd', this.TouchEnd, this);
 		this.Animation.kill();
 		this.Level.kill();
 	}
