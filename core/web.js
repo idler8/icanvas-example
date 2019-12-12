@@ -72,10 +72,29 @@ class GAME {
 		// Core['ontouchstart' in window ? 'UtilWebTouchListen' : 'UtilWebMouseListen'](this.Context.canvas, this.Touch);
 	}
 	SetSize(x, y) {
+		let offsetWidth = this.Api.System.width;
+		let offsetLeft = 0;
+		let offsetHeight = this.Api.System.height;
+		let offsetTop = 0;
+		let ratio = this.Api.System.width / this.Api.System.height;
+		if (ratio < 0.4) {
+			y = (x / 750) * 1334;
+			offsetHeight = (this.Api.System.width / 750) * 1334;
+			offsetTop = (this.Api.System.height - offsetHeight) / 2;
+		} else if (ratio > 0.8) {
+			y = (x / 750) * 1334;
+			offsetWidth = (this.Api.System.height / 1334) * 750;
+			offsetLeft = (this.Api.System.width - offsetWidth) / 2;
+		}
+		this.Context.canvas.style.top = offsetTop + 'px';
+		this.Context.canvas.style.left = offsetLeft + 'px';
+		this.Context.canvas.style.width = offsetWidth + 'px';
+		this.Context.canvas.style.height = offsetHeight + 'px';
+
 		this.Pos.width = x;
 		this.Pos.height = y;
 		this.Context.SetSize(x, y);
-		this.Touch.Size.setTo(x / this.Api.System.width, y / this.Api.System.height);
+		this.Touch.Size.setTo(x / offsetWidth, y / this.Api.System.height);
 		return this;
 	}
 	Run(Stage, Interval = 1000 / 60) {
