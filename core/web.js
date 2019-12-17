@@ -110,7 +110,7 @@ class GAME {
 		} else {
 			Core.UtilWebMouseListen(this.Context.canvas, this.Touch);
 		}
-		// Core['ontouchstart' in window ? 'UtilWebTouchListen' : 'UtilWebMouseListen'](this.Context.canvas, this.Touch);
+		this.Context.canvas.style.position = 'absolute';
 	}
 	SetSize(x, y) {
 		let offsetWidth = this.Api.System.width;
