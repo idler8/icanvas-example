@@ -105,7 +105,6 @@ class Booms extends GAME.Component {
 		GAME.Event.off('Boom', this.Boom, this);
 	}
 	Boom(vector) {
-		console.log('vector', vector);
 		let boom = this.children.find(b => b.State >= b.Textures.length);
 		if (!boom) this.addChild((boom = new Boom()));
 		boom.position.setToArray(vector);
@@ -142,7 +141,7 @@ export default class Play extends GAME.Component {
 		this.Player.Moving = false;
 	}
 	create() {
-		GAME.Audio.channel('background', 'bgm');
+		// GAME.Audio.channel('background', 'bgm');
 		GAME.Touch.on('touchStart', this.TouchStart, this);
 		GAME.Touch.on('touchMove', this.TouchMove, this);
 		GAME.Touch.on('touchEnd', this.TouchEnd, this);

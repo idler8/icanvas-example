@@ -76,6 +76,7 @@ function LoaderFactory() {
 export const Loader = LoaderFactory();
 export function Remote(url) {
 	if (ENV.dynamic.assetsUrl && Loader) return Loader(url);
+	GAME.Event.emit('resourceDownload', -1);
 	return Promise.resolve({
 		assetsUrl: url,
 		resourceMap: ENV.dynamic.resourceMap.remote,

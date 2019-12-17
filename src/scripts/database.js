@@ -29,13 +29,13 @@ export class Table {
 		if (key === undefined) return this.Data;
 		return this.Data ? this.Data[key] : undefined;
 	}
-	Set(Data, Key) {
+	Set(Key, Data) {
 		if (this.Data) this.Data[Key] = Data;
 		return this;
 	}
 	Add(Key, Data = 1) {
 		this.Data[Key] += Data;
-		return 1;
+		return this;
 	}
 	GetString() {
 		return JSON.stringify(this.Data);
@@ -100,6 +100,9 @@ export class ArrTable extends Table {
 			this.Data.splice(index, 0, value);
 		}
 		return this;
+	}
+	get keys() {
+		return Object.keys(this.Data);
 	}
 }
 export class MapTable extends Table {

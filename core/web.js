@@ -9,7 +9,48 @@ Core.ComponentBase.Scroll = Core.ComponentScroll;
 
 Core.ComponentText.Context = Core.ApiWebCanvas('test').getContext('2d');
 Core.ComponentScroll.GetCanvas = Core.ApiWebCanvas;
-
+import { Howl, Howler } from 'howler';
+class WebAudio extends Core.ResourceAudio {
+	channels = {};
+	//单声道音效
+	channel(name = '', key = '', loop = true) {
+		if (this.channels[name]) this.channels[name].stop();
+		if (!key || !this.resources[key]) return this;
+		this.channels[name] = this.resources[key];
+		this.resources[key].play();
+		this.resources[key].loop(loop, this.channels[name]);
+		return this;
+	}
+	pools = {};
+	//声道池
+	pool(key) {
+		if (!key || !this.resources[key]) return this;
+		this.resources[key].play();
+		return this;
+	}
+	//静音
+	_mute = false;
+	get mute() {
+		return this._mute;
+	}
+	set mute(mute) {
+		this._mute = mute;
+		Object.keys(this.resources).forEach(key => this.resources[key].mute(mute));
+	}
+	Set(url) {
+		return new Promise((resolve, reject) => {
+			let audio = new Howl({
+				src: url,
+				loop: false,
+				autoplay: false,
+			});
+			audio.once('load', function() {
+				audio.key = url;
+				resolve(audio);
+			});
+		});
+	}
+}
 class Director extends Core.ComponentBase {
 	// Actors = {}; //演员
 	Scenes = {}; //场景
@@ -44,7 +85,7 @@ class GAME {
 		Random: Core.MathRandom,
 		Matrix3: Core.MathMatrix3,
 	};
-	Audio = new Core.ResourceWebAudio();
+	Audio = new WebAudio();
 	Image = new Core.ResourceWebImage();
 	Event = new Eventemitter3();
 	Pos = new Core.MathPosition();
