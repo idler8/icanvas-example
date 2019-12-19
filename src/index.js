@@ -1,6 +1,4 @@
 // 全局数据库
-import VConsole from 'vconsole';
-var vConsole = new VConsole();
 import Database from './scripts/database.js';
 GAME.Data = new Database('global_' + ENV.input.mode);
 // 游戏设置
@@ -26,17 +24,17 @@ Loader.Listen();
 //运行流程
 Promise.all([
 	Promise.all([
-		GAME.Image.preLoad(GAME.Utils.LoadMap(ENV.dynamic.resourceMap.local, 'resource/local/', '', ['png', 'jpg'])), //载入本地图片
+		GAME.Image.preLoad(GAME.Image.loadMap(ENV.dynamic.resourceMap.local, 'resource/local/', '', ['png', 'jpg'])), //载入本地图片
 		GAME.Data.Map('Setting')
 			.GetStorage(true)
 			.then(() => (GAME.Audio.mute = !GAME.Data.Map('Setting').Get('Audio'))), //读取声音配置
 	]).then(() => GAME.Director.Go('Load')),
 	Loader.Remote(ENV.dynamic.assetsUrl || 'resource/remote').then(res => {
 		console.log('得到远程资源路径', res);
-		GAME.Shared.Send({ resource: GAME.Utils.LoadMap(res.resourceMap.rank, res.assetsUrl + '/rank/', '', ['png', 'jpg']) });
+		GAME.Shared.Send({ resource: GAME.Image.loadMap(res.resourceMap.rank, res.assetsUrl + '/rank/', '', ['png', 'jpg']) });
 		return Promise.all([
-			GAME.Image.preLoad(GAME.Utils.LoadMap(res.resourceMap, res.assetsUrl + '/', '', ['png', 'jpg'])), //载入远程图片
-			GAME.Audio.preLoad(GAME.Utils.LoadMap(res.resourceMap.audio, res.assetsUrl + '/audio/', '', ['mp3'])), //载入远程音频
+			GAME.Image.preLoad(GAME.Image.loadMap(res.resourceMap, res.assetsUrl + '/', '', ['png', 'jpg'])), //载入远程图片
+			GAME.Audio.preLoad(GAME.Audio.loadMap(res.resourceMap.audio, res.assetsUrl + '/audio/', '', ['mp3'])), //载入远程音频
 		]);
 	}),
 	// Promise.resolve(), //用户登陆

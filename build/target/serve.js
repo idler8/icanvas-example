@@ -1,9 +1,9 @@
 import fs from 'fs-extra';
-import * as cli from './core.js';
+import * as cli from '../utils/core.js';
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
-import json from 'rollup-plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import json from 'rollup-plugin-json5';
 import inject from 'rollup-plugin-inject';
 import replace from 'rollup-plugin-replace-ast';
 
@@ -22,7 +22,7 @@ function create(project, input, dynamic) {
 		context: 'null',
 		moduleContext: 'null',
 		plugins: [
-			resolve({ preferBuiltins: true, browser: true }),
+			resolve({ jsnext: true, preferBuiltins: true, browser: true }),
 			json(),
 			babel({
 				babelrc: false,
@@ -34,12 +34,12 @@ function create(project, input, dynamic) {
 			}),
 			commonjs(),
 			inject({
-				exclude: ['node_modules/**', 'build/**', 'core/**'],
-				GAME: [path.resolve('./core/web.js'), 'default'],
+				exclude: ['node_modules/**', 'build/**'],
+				GAME: [path.resolve('./build/core/web.js'), 'default'],
 			}),
 			replace({ project, input, dynamic }),
 			htmlTemplate({
-				template: 'build/web.ejs',
+				template: 'build/utils/web.ejs',
 				target: '../serve/index.html',
 				replaceVars: { __TITLE__: project.name },
 			}),
@@ -53,7 +53,7 @@ function create(project, input, dynamic) {
 		],
 	};
 }
-import project from './project.json';
+import project from '../project.json';
 export default args => {
 	let input = args.input;
 	delete args.input;

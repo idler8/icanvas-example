@@ -58,9 +58,11 @@ class Board extends BoxModal {
 		this.Friend.touchTap();
 	}
 	update(Context) {
-		Context.Image('rank/boxbg', 0, 322);
+		let bg = GAME.Image.get('rank/boxbg');
+		let face = GAME.Image.get('rank/boxface');
+		Context.drawImage(bg, 0, 322);
 		super.update(Context);
-		Context.Image('rank/boxface', 0, 400);
+		Context.drawImage(face, 0, 400);
 	}
 	create() {
 		if (ENV.input.target != 'wxgame') return;
@@ -109,10 +111,10 @@ export default class Home extends GAME.Component {
 		.setScale(5, 5)
 		.setPosition(GAME.Pos.center + 100, GAME.Pos.middle + 120);
 	create() {
-		GAME.Audio.channel('background', 'home');
+		GAME.Audio.get('home').play();
 	}
 	destroy() {
-		GAME.Audio.channel('background');
+		GAME.Audio.get('home').stop();
 	}
 	constructor() {
 		super();
@@ -135,5 +137,6 @@ export default class Home extends GAME.Component {
 			Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开');
 		};
 		this.addChild(this.Background, this.Play, this.Audio, this.Share, this.Rank);
+		console.log(this.Play);
 	}
 }

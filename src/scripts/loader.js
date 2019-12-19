@@ -1,12 +1,12 @@
-import { UtilWxgameVary } from '@icanvas/core';
+import * as Wxgame from '@icanvas/core-wxgame';
 function LoaderFactory() {
 	if (ENV.input.target != 'wxgame') return;
 	let FileManager = wx.getFileSystemManager();
 	let Apis = {
-		unzip: UtilWxgameVary('unzip', FileManager),
-		rmdir: UtilWxgameVary('rmdir', FileManager),
-		writeFile: UtilWxgameVary('writeFile', FileManager),
-		readFile: UtilWxgameVary('readFile', FileManager),
+		unzip: Wxgame.UtilVary('unzip', FileManager),
+		rmdir: Wxgame.UtilVary('rmdir', FileManager),
+		writeFile: Wxgame.UtilVary('writeFile', FileManager),
+		readFile: Wxgame.UtilVary('readFile', FileManager),
 	};
 	function Download(url) {
 		return new Promise((success, fail) => {

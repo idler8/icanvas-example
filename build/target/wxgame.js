@@ -1,9 +1,9 @@
 import fs from 'fs-extra';
-import * as cli from './core.js';
+import * as cli from '../utils/core.js';
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
-import json from 'rollup-plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import json from 'rollup-plugin-json5';
 import inject from 'rollup-plugin-inject';
 import replace from 'rollup-plugin-replace-ast';
 
@@ -22,7 +22,7 @@ function createOpen(project, input, dynamic) {
 		context: 'null',
 		moduleContext: 'null',
 		plugins: [
-			resolve({ preferBuiltins: true, browser: true }),
+			resolve({}),
 			json(),
 			babel({
 				babelrc: false,
@@ -34,8 +34,8 @@ function createOpen(project, input, dynamic) {
 			}),
 			commonjs(),
 			inject({
-				exclude: ['node_modules/**', 'build/**', 'core/**'],
-				GAME: [path.resolve('./core/open.js'), 'default'],
+				exclude: ['node_modules/**', 'build/**'],
+				GAME: [path.resolve('./build/core/open.js'), 'default'],
 			}),
 			replace({ project, input, dynamic }),
 			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
@@ -51,6 +51,7 @@ function create(project, input, dynamic) {
 		},
 		context: 'null',
 		moduleContext: 'null',
+		external: ['window', 'document', 'wx'],
 		plugins: [
 			copy({ targets: [{ src: 'resource/local/', dest: '../wxgame/resource/' }] }),
 			dynamic.assetsUrl
@@ -70,7 +71,7 @@ function create(project, input, dynamic) {
 						],
 				  })
 				: copy({ targets: [{ src: 'resource/remote/', dest: '../wxgame/resource/' }] }),
-			resolve({ preferBuiltins: true, browser: true }),
+			resolve(),
 			json(),
 			babel({
 				babelrc: false,
@@ -80,10 +81,10 @@ function create(project, input, dynamic) {
 				externalHelpers: false,
 				runtimeHelpers: true,
 			}),
-			commonjs({}),
+			commonjs(),
 			inject({
-				exclude: ['node_modules/**', 'build/**', 'core/**'],
-				GAME: [path.resolve('./core/wxgame.js'), 'default'],
+				exclude: ['node_modules/**', 'build/**'],
+				GAME: [path.resolve('./build/core/wxgame.js'), 'default'],
 			}),
 			replace({ project, input, dynamic }),
 			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
@@ -97,7 +98,7 @@ function checkOpen(project, input, dynamic) {
 	if (project.wxgame['game.json'].openDataContext) return [create(project, input, dynamic), createOpen(project, input, dynamic)];
 	return create(project, input, dynamic);
 }
-import project from './project.json';
+import project from '../project.json';
 export default args => {
 	let input = args.input;
 	delete args.input;

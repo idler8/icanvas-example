@@ -6,9 +6,9 @@ import OBJLoaderFactory from './OBJLoader.js';
 const OBJLoader = OBJLoaderFactory(THREE, FileLoader);
 import MTLLoaderFactory from './MTLLoader.js';
 const MTLLoader = MTLLoaderFactory(THREE, FileLoader);
-import { ResourceLoad } from '@icanvas/core';
+import { UtilLoader } from '@icanvas/core';
 
-export default class THREEModel extends ResourceLoad {
+export default class THREEModel extends UtilLoader {
 	Set(url) {
 		let LoaderMtl = new MTLLoader();
 		LoaderMtl.setMaterialOptions({ side: THREE.DoubleSide });

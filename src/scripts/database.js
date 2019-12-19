@@ -1,20 +1,20 @@
-import * as Core from '@icanvas/core';
+import * as Wxgame from '@icanvas/core-wxgame';
 let DelStorage =
 	ENV.input.target == 'wxgame'
-		? Core.UtilWxgameVary('removeStorage')
+		? Wxgame.UtilVary('removeStorage')
 		: function(key) {
 				window.localStorage.removeItem(key);
 				return Promise.resolve();
 		  };
 let GetStorage =
 	ENV.input.target == 'wxgame'
-		? Core.UtilWxgameVary('getStorage')
+		? Wxgame.UtilVary('getStorage')
 		: function(key) {
 				return Promise.resolve({ data: window.localStorage.getItem(key) });
 		  };
 let SetStorage =
 	ENV.input.target == 'wxgame'
-		? Core.UtilWxgameVary('setStorage')
+		? Wxgame.UtilVary('setStorage')
 		: function({ key, data }) {
 				window.localStorage.setItem(key, data);
 				return Promise.resolve();

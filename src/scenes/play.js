@@ -53,7 +53,7 @@ class Bullet extends GAME.Component.Texture {
 			if (!GAME.Collsion.InComponent(enemys[i], this.position)) continue;
 			enemys[i].visible = false;
 			this.visible = false;
-			GAME.Audio.pool('boom');
+			GAME.Audio.get('boom').play();
 			GAME.Event.emit('Boom', this.position);
 		}
 	}
@@ -65,7 +65,7 @@ class Bullets extends GAME.Component {
 		bullet.x = position.x;
 		bullet.y = position.y - 35;
 		bullet.visible = true;
-		GAME.Audio.pool('bullet');
+		GAME.Audio.get('bullet').play();
 	}
 	Collsion(enemys) {
 		for (let i = 0; i < this.children.length; i++) {
@@ -141,13 +141,13 @@ export default class Play extends GAME.Component {
 		this.Player.Moving = false;
 	}
 	create() {
-		// GAME.Audio.channel('background', 'bgm');
+		GAME.Audio.get('bgm').play();
 		GAME.Touch.on('touchStart', this.TouchStart, this);
 		GAME.Touch.on('touchMove', this.TouchMove, this);
 		GAME.Touch.on('touchEnd', this.TouchEnd, this);
 	}
 	destroy() {
-		GAME.Audio.channel('background');
+		GAME.Audio.get('bgm').stop();
 		GAME.Touch.off('touchStart', this.TouchStart, this);
 		GAME.Touch.off('touchMove', this.TouchMove, this);
 		GAME.Touch.off('touchEnd', this.TouchEnd, this);

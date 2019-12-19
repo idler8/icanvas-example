@@ -4,7 +4,7 @@ export default class Range extends GAME.Component {
 		if (!this.Range) return;
 		this.Range.forEach((user, i) => {
 			if (!user) return;
-			Context.Image(user.openid, GAME.Pos.center - 160 + i * 160, GAME.Pos.middle - 240, 130, 130);
+			Context.drawImage(GAME.Image.get(user.openid), GAME.Pos.center - 160 + i * 160, GAME.Pos.middle - 240, 130, 130);
 			Context.FontSet('28px 微软雅黑,黑体', '#f4f4f4', 'center', 'middle');
 			Context.fillText(user.values[this.SortKey], GAME.Pos.center - 160 + i * 160, GAME.Pos.middle - 150, 150);
 		});

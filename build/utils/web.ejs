@@ -30,6 +30,11 @@
 
 	<body>
 		<script>
+			// if (!/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+			// 	var style = document.createElement('style');
+			// 	style.innerHTML = 'body,canvas{height:' + document.body.clientHeight + 'px;width:' + (750 * document.body.clientHeight) / 1334 + 'px;}';
+			// 	document.head.appendChild(style);
+			// }
 			document.addEventListener('contextmenu', function(e) {
 				e.preventDefault();
 			});
