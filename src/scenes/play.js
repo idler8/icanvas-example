@@ -130,12 +130,12 @@ export default class Play extends GAME.Component {
 		this.Bullets.Collsion(this.Enemys.children);
 	}
 	TouchStart(touch) {
-		if (GAME.Collsion.InComponent(this.Player, { x: touch.startX, y: touch.startY })) this.Player.Moving = true;
+		if (GAME.Collsion.InComponent(this.Player, touch)) this.Player.Moving = true;
 	}
 	TouchMove(touch) {
 		if (!this.Player.Moving) return;
-		this.Player.x = touch.moveX;
-		this.Player.y = touch.moveY;
+		this.Player.x = touch.x;
+		this.Player.y = touch.y;
 	}
 	TouchEnd(touch) {
 		this.Player.Moving = false;
