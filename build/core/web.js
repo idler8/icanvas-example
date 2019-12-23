@@ -35,6 +35,12 @@ GAME.Component.Scroll = class Scroll extends Core.Scroll(GAME.Component.Texture,
 	destroy() {
 		GAME.Touch.off('touchMove', this.touchMove, this);
 	}
+	touchDirector(res) {
+		if (res == 'refresh') this.refresh();
+	}
+	touchTap(touch) {
+		this.touchDirector(GAME.Collision.Recursive(this.director, { x: touch.x + this.clipX, y: touch.y + this.clipY }));
+	}
 };
 import Director from '../utils/director.js';
 GAME.Director = new (Director(GAME.Component))();
@@ -49,7 +55,7 @@ GAME.Context = GAME.Api.Context('main');
 GAME.Clock = new Core.MathClock();
 GAME.Render = new Core.UtilRender();
 GAME.Touch = new Core.UtilTouch();
-GAME.Collsion = new Core.UtilCollsion();
+GAME.Collision = new Core.UtilCollision();
 import { TweenLite, TimelineMax, Linear } from 'gsap/TweenMax';
 TweenLite.defaultEase = Linear.easeNone;
 GAME.TWEEN = TimelineMax;

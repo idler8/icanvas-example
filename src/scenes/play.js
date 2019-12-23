@@ -18,14 +18,14 @@ class Enemy extends GAME.Component.Texture {
 }
 class Enemys extends GAME.Component {
 	Total = 1;
-	Collsion(position) {
+	Collision(position) {
 		let enemyVisibleLength = 0;
 		for (let i = 0; i < this.children.length; i++) {
 			let enemy = this.children[i];
 			if (!enemy.visible) continue;
 			enemyVisibleLength++;
 			if (enemy.position.y >= GAME.Pos.height + 200) enemy.Reset();
-			if (!GAME.Collsion.InComponent(enemy, position)) continue;
+			if (!GAME.Collision.InComponent(enemy, position)) continue;
 			return GAME.Director.Go('Home');
 		}
 		if (enemyVisibleLength < this.Total) this.Send();
@@ -47,11 +47,11 @@ class Bullet extends GAME.Component.Texture {
 		if (this.y < 0) this.visible = false;
 		return super.preUpdate(renderer);
 	}
-	Collsion(enemys) {
+	Collision(enemys) {
 		for (let i = 0; i < enemys.length; i++) {
 			if (!this.visible) continue;
 			if (!enemys[i].visible) continue;
-			if (!GAME.Collsion.InComponent(enemys[i], this.position)) continue;
+			if (!GAME.Collision.InComponent(enemys[i], this.position)) continue;
 			enemys[i].visible = false;
 			this.visible = false;
 			GAME.Audio.get('boom').play();
@@ -68,9 +68,9 @@ class Bullets extends GAME.Component {
 		bullet.visible = true;
 		GAME.Audio.get('bullet').play();
 	}
-	Collsion(enemys) {
+	Collision(enemys) {
 		for (let i = 0; i < this.children.length; i++) {
-			this.children[i].Collsion(enemys);
+			this.children[i].Collision(enemys);
 		}
 	}
 }
@@ -128,13 +128,13 @@ export default class Play extends GAME.Component {
 		new GAME.Component().setPosition(this.Player.width / 3, -this.Player.height / 3).setParent(this.Player);
 	}
 	preUpdate(renderer) {
-		this.Enemys.Collsion({ x: this.Player.x - 60, y: this.Player.y - 40 });
-		this.Enemys.Collsion({ x: this.Player.x + 60, y: this.Player.y - 40 });
-		this.Bullets.Collsion(this.Enemys.children);
+		this.Enemys.Collision({ x: this.Player.x - 60, y: this.Player.y - 40 });
+		this.Enemys.Collision({ x: this.Player.x + 60, y: this.Player.y - 40 });
+		this.Bullets.Collision(this.Enemys.children);
 		super.preUpdate(renderer);
 	}
 	TouchStart(touch) {
-		if (GAME.Collsion.InComponent(this.Player, touch)) this.Player.Moving = true;
+		if (GAME.Collision.InComponent(this.Player, touch)) this.Player.Moving = true;
 	}
 	TouchMove(touch) {
 		if (!this.Player.Moving) return;

@@ -38,7 +38,7 @@ GAME.Event = new Eventemitter3();
 GAME.Context = GAME.Api.Canvas('shared').getContext('2d');
 GAME.Render = new Core.UtilRender();
 GAME.Touch = new Core.UtilTouch();
-GAME.Collsion = new Core.UtilCollsion();
+GAME.Collision = new Core.UtilCollision();
 import { TweenLite, TimelineMax, Linear } from 'gsap/TweenMax';
 TweenLite.defaultEase = Linear.easeNone;
 GAME.TWEEN = TimelineMax;

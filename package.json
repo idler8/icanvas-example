@@ -9,7 +9,7 @@
 		"web": "rollup -c build/target/web.js -- target=web"
 	},
 	"dependencies": {
-		"@icanvas/core": "^3.0.45",
+		"@icanvas/core": "^3.0.47",
 		"@icanvas/core-web": "^1.0.0",
 		"@icanvas/core-wxgame": "^1.0.6",
 		"axios": "^0.19.0",

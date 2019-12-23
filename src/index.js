@@ -16,7 +16,7 @@ GAME.SetSize(750, 750 / GAME.Api.System.ratio).Run(GAME.Director, 1000 / 60); //
 GAME.Touch.on('touchEnd', touch => {
 	if (touch.endTime - touch.startTime > 200) return;
 	if (Math.sqrt(Math.pow(touch.startX - touch.endX, 2) + Math.pow(touch.startY - touch.endY, 2)) > 12) return;
-	GAME.Collsion.Recursive(GAME.Director, { x: touch.endX, y: touch.endY });
+	GAME.Collision.Recursive(GAME.Director, { x: touch.endX, y: touch.endY });
 });
 //初始化资源加载监听器
 import * as Loader from './scripts/loader.js';
