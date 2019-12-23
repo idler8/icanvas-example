@@ -42,9 +42,10 @@ class Bullet extends GAME.Component.Texture {
 			.setAnchorSize()
 			.setScale(0.3, 0.3);
 	}
-	preUpdate() {
+	preUpdate(renderer) {
 		this.y -= 10;
 		if (this.y < 0) this.visible = false;
+		return super.preUpdate(renderer);
 	}
 	Collsion(enemys) {
 		for (let i = 0; i < enemys.length; i++) {
@@ -80,9 +81,10 @@ class Background extends GAME.Component {
 		super();
 		this.addChild(this.Background1, this.Background2);
 	}
-	preUpdate() {
+	preUpdate(renderer) {
 		this.y++;
 		if (this.y >= GAME.Pos.height) this.y = 0;
+		super.preUpdate(renderer);
 	}
 }
 class Boom extends GAME.Component.Texture {
@@ -91,10 +93,11 @@ class Boom extends GAME.Component.Texture {
 	constructor() {
 		super(null, { scale: 5 });
 	}
-	preUpdate() {
-		if (this.State >= this.Textures.length) return;
+	preUpdate(renderer) {
+		if (this.State >= this.Textures.length) return true;
 		this.State++;
 		this.setTexture(this.Textures[this.State]).setAnchorSize();
+		return super.preUpdate(renderer);
 	}
 }
 class Booms extends GAME.Component {
@@ -124,10 +127,11 @@ export default class Play extends GAME.Component {
 		new GAME.Component().setPosition(-this.Player.width / 3, -this.Player.height / 3).setParent(this.Player);
 		new GAME.Component().setPosition(this.Player.width / 3, -this.Player.height / 3).setParent(this.Player);
 	}
-	preUpdate() {
+	preUpdate(renderer) {
 		this.Enemys.Collsion({ x: this.Player.x - 60, y: this.Player.y - 40 });
 		this.Enemys.Collsion({ x: this.Player.x + 60, y: this.Player.y - 40 });
 		this.Bullets.Collsion(this.Enemys.children);
+		super.preUpdate(renderer);
 	}
 	TouchStart(touch) {
 		if (GAME.Collsion.InComponent(this.Player, touch)) this.Player.Moving = true;

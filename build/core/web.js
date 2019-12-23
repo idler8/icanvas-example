@@ -4,6 +4,7 @@ const GAME = {};
 
 GAME.Api = {};
 GAME.Api.Canvas = Web.ApiCanvas;
+GAME.Api.Context = key => GAME.Api.Canvas(key).getContext('2d');
 GAME.Api.System = Web.ApiSystem();
 import axios from 'axios';
 GAME.Api.Req = axios;
@@ -26,8 +27,15 @@ GAME.Component.Texture = class Sprite extends Core.Sprite(GAME.Component) {
 	}
 };
 GAME.Component.Rect = Core.Rect(GAME.Component);
-GAME.Component.Text = Core.Text(GAME.Component, GAME.Api.Canvas().getContext('2d'));
-// GAME.Component.Scroll = Core.ComponentElementScroll(ClipProperties);
+GAME.Component.Text = Core.Text(GAME.Component, GAME.Api.Context());
+GAME.Component.Scroll = class Scroll extends Core.Scroll(GAME.Component.Texture, GAME.Api.Context) {
+	create() {
+		GAME.Touch.on('touchMove', this.touchMove, this);
+	}
+	destroy() {
+		GAME.Touch.off('touchMove', this.touchMove, this);
+	}
+};
 import Director from '../utils/director.js';
 GAME.Director = new (Director(GAME.Component))();
 
@@ -37,7 +45,7 @@ GAME.Pos = new Core.MathPosition();
 import Eventemitter3 from 'eventemitter3';
 GAME.Event = new Eventemitter3();
 
-GAME.Context = GAME.Api.Canvas('main').getContext('2d');
+GAME.Context = GAME.Api.Context('main');
 GAME.Clock = new Core.MathClock();
 GAME.Render = new Core.UtilRender();
 GAME.Touch = new Core.UtilTouch();

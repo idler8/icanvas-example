@@ -5,6 +5,7 @@ const GAME = {};
 
 GAME.Api = {};
 GAME.Api.Canvas = Wxgame.ApiCanvas;
+GAME.Api.Context = key => GAME.Api.Canvas(key).getContext('2d');
 GAME.Api.System = Wxgame.ApiSystem();
 GAME.Api.Req = Wxgame.ApiRequest();
 GAME.Api.Font = Wxgame.UtilVary('loadFont', wx, 2);
@@ -25,8 +26,15 @@ GAME.Component.Texture = class Sprite extends Core.Sprite(GAME.Component) {
 	}
 };
 GAME.Component.Rect = Core.Rect(GAME.Component);
-GAME.Component.Text = Core.Text(GAME.Component, GAME.Api.Canvas().getContext('2d'));
-// GAME.Component.Scroll = Core.ComponentElementScroll(ClipProperties);
+GAME.Component.Text = Core.Text(GAME.Component, GAME.Api.Context());
+GAME.Component.Scroll = class Scroll extends Core.Scroll(GAME.Component.Texture, GAME.Api.Context) {
+	create() {
+		GAME.Touch.on('touchMove', this.touchMove, this);
+	}
+	destroy() {
+		GAME.Touch.off('touchMove', this.touchMove, this);
+	}
+};
 import Director from '../utils/director.js';
 GAME.Director = new (Director(GAME.Component))();
 

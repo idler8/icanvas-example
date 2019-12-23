@@ -87,6 +87,7 @@ class Board extends BoxModal {
 		if (GAME.Api.Login.GetUserInfo.Abort) GAME.Api.Login.GetUserInfo.Abort();
 	}
 }
+
 export default class Home extends GAME.Component {
 	Background = new GAME.Component.Texture('play/bg').setSize(GAME.Pos.width, GAME.Pos.height);
 	Play = new GAME.Component.Texture('play/Common')
@@ -134,7 +135,12 @@ export default class Home extends GAME.Component {
 		this.Audio.touchTap = () => {
 			GAME.Audio.mute = !GAME.Audio.mute;
 			Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开');
+			return 'refresh';
 		};
 		this.addChild(this.Background, this.Play, this.Audio, this.Share, this.Rank);
+		return new GAME.Component.Scroll(this, { clip: { x: 0, y: 0, width: GAME.Pos.width, height: GAME.Pos.height } }).refresh(
+			GAME.Pos.width + 200,
+			GAME.Pos.height + 400,
+		);
 	}
 }
