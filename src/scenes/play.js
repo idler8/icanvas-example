@@ -6,6 +6,9 @@ class Enemy extends GAME.Component.Texture {
 		.set(this, { y: 0 })
 		.to(this, 3, { y: GAME.Pos.height + 200 })
 		.set(this, { visible: false });
+	preUpdate(renderer) {
+		return super.preUpdate(renderer);
+	}
 	Reset() {
 		this.visible = true;
 		this.x = GAME.Math.Random(750);
@@ -17,6 +20,18 @@ class Enemy extends GAME.Component.Texture {
 	}
 }
 class Enemys extends GAME.Component {
+	set Slow(s) {
+		if (s) {
+			this.children.forEach(e => e.Animation.timeScale(0.1));
+		} else {
+			this.children.forEach(e => e.Animation.timeScale(1));
+		}
+		this._Slow = s;
+	}
+	get Slow() {
+		return this._Slow;
+	}
+	_Slow = true;
 	Total = 1;
 	Collision(position) {
 		let enemyVisibleLength = 0;
@@ -33,6 +48,7 @@ class Enemys extends GAME.Component {
 	Send() {
 		let enemy = this.children.find(e => !e.visible);
 		if (!enemy) this.addChild((enemy = new Enemy()));
+		enemy.Animation.timeScale(this.Slow ? 0.1 : 1);
 		enemy.Reset();
 	}
 }
@@ -43,7 +59,7 @@ class Bullet extends GAME.Component.Texture {
 			.setScale(0.3, 0.3);
 	}
 	preUpdate(renderer) {
-		this.y -= 10;
+		this.y -= this.parent.Slow ? 1 : 10;
 		if (this.y < 0) this.visible = false;
 		return super.preUpdate(renderer);
 	}
@@ -60,6 +76,7 @@ class Bullet extends GAME.Component.Texture {
 	}
 }
 class Bullets extends GAME.Component {
+	Slow = true;
 	Send(position) {
 		let bullet = this.children.find(b => !b.visible);
 		if (!bullet) this.addChild((bullet = new Bullet()));
@@ -126,6 +143,10 @@ export default class Play extends GAME.Component {
 		super().addChild(this.Background, this.Player, this.Enemys, this.Bullets, this.Booms);
 		new GAME.Component().setPosition(-this.Player.width / 3, -this.Player.height / 3).setParent(this.Player);
 		new GAME.Component().setPosition(this.Player.width / 3, -this.Player.height / 3).setParent(this.Player);
+		this.Animation.timeScale(0.1);
+		this.Level.timeScale(0.1);
+		this.Bullets.Slow = true;
+		this.Enemys.Slow = true;
 	}
 	preUpdate(renderer) {
 		this.Enemys.Collision({ x: this.Player.x - 60, y: this.Player.y - 40 });
@@ -134,6 +155,10 @@ export default class Play extends GAME.Component {
 		super.preUpdate(renderer);
 	}
 	TouchStart(touch) {
+		this.Animation.timeScale(1);
+		this.Level.timeScale(1);
+		this.Bullets.Slow = false;
+		this.Enemys.Slow = false;
 		if (GAME.Collision.InComponent(this.Player, touch)) this.Player.Moving = true;
 	}
 	TouchMove(touch) {
@@ -142,6 +167,10 @@ export default class Play extends GAME.Component {
 		this.Player.y = touch.y;
 	}
 	TouchEnd(touch) {
+		this.Animation.timeScale(0.1);
+		this.Level.timeScale(0.1);
+		this.Bullets.Slow = true;
+		this.Enemys.Slow = true;
 		this.Player.Moving = false;
 	}
 	create() {
