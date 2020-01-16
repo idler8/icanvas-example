@@ -9,12 +9,12 @@
 		"web": "rollup -c build/target/web.js -- target=web"
 	},
 	"dependencies": {
-		"@icanvas/core": "^3.0.47",
-		"@icanvas/core-web": "^1.0.0",
-		"@icanvas/core-wxgame": "^1.0.6",
-		"axios": "^0.19.0",
-		"eventemitter3": "^4.0.0",
+		"@icanvas/core": "^3.0.52",
+		"@icanvas/core-web": "^1.0.1",
+		"@icanvas/core-wxgame": "^1.0.7",
+		"axios": "^0.19.1",
 		"gsap": "^2.1.3",
+		"stats-js": "^1.0.1",
 		"vconsole": "^3.3.4"
 	},
 	"devDependencies": {
@@ -38,7 +38,8 @@
 		"rollup-plugin-livereload": "^1.0.4",
 		"rollup-plugin-qiniu": "^1.0.3",
 		"rollup-plugin-replace-ast": "^1.0.3",
-		"rollup-plugin-terser": "^5.1.3"
+		"rollup-plugin-terser": "^5.1.3",
+		"rollup-plugin-glslify": "^1.1.3"
 	},
 	"prettier": {
 		"printWidth": 160,

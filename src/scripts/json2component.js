@@ -10,7 +10,7 @@ const BaseAnimation = function(base, animations) {
 	base.destroy = () => Animation.kill();
 };
 const GetComponent = function(options) {
-	if (options.texture) return new GAME.Component.Texture(options.texture);
+	if (options.texture) return new GAME.Component.Sprite(options.texture);
 	return new GAME.Component();
 };
 export default function GetSkin(options = {}) {

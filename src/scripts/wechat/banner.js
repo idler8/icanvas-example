@@ -13,10 +13,10 @@ export default {
 	},
 	SetSize(l, t, w, h) {
 		if (!this.Ad) return;
-		this.Ad.style.left = (l * GAME.Api.System.width) / GAME.Pos.width;
-		this.Ad.style.top = (t * GAME.Api.System.height) / GAME.Pos.height;
-		this.Ad.style.width = (w * GAME.Api.System.width) / GAME.Pos.width;
-		this.Ad.style.height = (h * GAME.Api.System.height) / GAME.Pos.height;
+		this.Ad.style.left = (l * GAME.System.width) / GAME.Pos.width;
+		this.Ad.style.top = (t * GAME.System.height) / GAME.Pos.height;
+		this.Ad.style.width = (w * GAME.System.width) / GAME.Pos.width;
+		this.Ad.style.height = (h * GAME.System.height) / GAME.Pos.height;
 	},
 	Hide() {
 		if (!this.Ad) return;

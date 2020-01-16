@@ -3,18 +3,18 @@ function LoaderFactory() {
 	if (ENV.input.target != 'wxgame') return;
 	let FileManager = wx.getFileSystemManager();
 	let Apis = {
-		unzip: Wxgame.UtilVary('unzip', FileManager),
-		rmdir: Wxgame.UtilVary('rmdir', FileManager),
-		writeFile: Wxgame.UtilVary('writeFile', FileManager),
-		readFile: Wxgame.UtilVary('readFile', FileManager),
+		unzip: Wxgame.Vary('unzip', FileManager),
+		rmdir: Wxgame.Vary('rmdir', FileManager),
+		writeFile: Wxgame.Vary('writeFile', FileManager),
+		readFile: Wxgame.Vary('readFile', FileManager),
 	};
-	function Download(url) {
+	function Download(url, loaded) {
 		return new Promise((success, fail) => {
-			wx.downloadFile({ url, success, fail }).onProgressUpdate(res => GAME.Event.emit('resourceDownload', res.progress));
+			wx.downloadFile({ url, success, fail }).onProgressUpdate(res => loaded(res.progress));
 		})
 			.then(res => (res.statusCode != 200 ? Promise.reject('文件资源，下载失败') : res.tempFilePath))
 			.catch(() => {
-				GAME.Event.emit('resourceDownload', 0);
+				loaded(0);
 				return new Promise(reslove => {
 					//TODO 是否改为点击重试
 					setTimeout(() => {
@@ -53,15 +53,15 @@ function LoaderFactory() {
 			.then(res => JSON.parse(res.data) || {})
 			.catch(res => ({}));
 	}
-	return function(url) {
+	return function(url, loaded) {
 		let encode = encodeURIComponent(url);
 		return ReadStorage('resource.json').then(options => {
 			if (options.url == url) {
-				GAME.Event.emit('resourceDownload', -1);
+				loaded(100);
 				return { assetsUrl: wx.env.USER_DATA_PATH + '/' + encode + '/', resourceMap: options.resourceMap };
 			}
 			return Remove(options.url)
-				.then(() => Download(url))
+				.then(() => Download(url, loaded))
 				.then(path => UnZip(path, url))
 				.then(() => ReadStorage(encode + '/option.json'))
 				.then(resourceMap => {
@@ -74,64 +74,76 @@ function LoaderFactory() {
 	};
 }
 export const Loader = LoaderFactory();
-export function Remote(url) {
-	if (ENV.dynamic.assetsUrl && Loader) return Loader(url);
-	GAME.Event.emit('resourceDownload', -1);
+export function Remote(url, loaded) {
+	if (ENV.dynamic.assetsUrl && Loader) return Loader(url, loaded);
+	loaded(100);
 	return Promise.resolve({
 		assetsUrl: url,
 		resourceMap: ENV.dynamic.resourceMap.remote,
 	});
 }
-export function Listen(event = 'preLoadProgress', endEvent = 'preLoaded') {
-	let Progress = { P1: 100, T1: 100, V1: 0.75 * 0.7, P2: 1, T2: 1, V2: 0.75 * 0.3, P3: 5, T3: 5, V3: 0.25 };
-	let Compute = function() {
-		let Total = (Progress.P1 / Progress.T1) * Progress.V1 + (Progress.P2 / Progress.T2) * Progress.V2 + (Progress.P3 / Progress.T3) * Progress.V3;
-		if (Total > 100) Total = 100;
-		if (Total < 0) Total = 0;
-		GAME.Event.emit(event, (Total * 100).toFixed(1));
-	};
-	let ResDownload = function(progress) {
-		console.log('资源下载进度', progress);
-		if (progress == -1) {
-			Progress.V2 += Progress.V1;
-			Progress.V1 = 0;
+export class Progress extends GAME.Event {
+	get progress() {
+		return this._full ? this._current / this._full : 1;
+	}
+	constructor(name = '', full, current = 0) {
+		super();
+		this.name = name;
+		this.full = full || 0;
+		this.current = current;
+	}
+	set full(n) {
+		this._full = n;
+		this.emit('loading');
+	}
+	set current(n) {
+		this._current = n;
+		this.emit('loading');
+	}
+	get current() {
+		return this._current;
+	}
+}
+export class Listen extends GAME.Event {
+	constructor() {
+		super();
+		this.loading = null;
+		this.progresses = [];
+	}
+	add(name, full, current = 0) {
+		let start = this.progresses.length;
+		let progress = new Progress(name, full, current);
+		this.progresses.push(progress);
+		this.tagNext(start);
+		return progress;
+	}
+	tagNext(start) {
+		if (this.loading) return this.loading.emit('loading');
+		for (let i = start; i < this.progresses.length; i++) {
+			let progress = this.progresses[i];
+			if (progress.finish) continue;
+			this.loading = progress;
+			progress.on('loading', () => this.emit('loading', progress));
+			progress.once('finish', () => {
+				this.loading = null;
+				progress.finish = true;
+				progress.off('loading');
+				this.tagNext(i);
+			});
 		}
-		Progress.P1 = progress;
-		Compute();
-	};
-	let ResLoad = function(length) {
-		console.log(arguments.length == 1 ? '资源文件准备加载' + length : '资源文件加载完成');
-		if (arguments.length == 1) {
-			Progress.T2 += length;
-		} else {
-			Progress.P2 += 1;
-		}
-		Compute();
-	};
-	let Loging = function(progress) {
-		console.log('登陆进度', progress);
-		Progress.P3 = progress;
-		if (progress == -1) {
-			Progress.V1 += Progress.V3 * (Progress.V1 / 0.75);
-			Progress.V2 += Progress.V3 * (Progress.V2 / 0.75);
-			Progress.V3 = 0;
-		}
-		Compute();
-	};
-	Compute();
-	GAME.Event.on('loging', Loging, this);
-	GAME.Event.on('resourceDownload', ResDownload);
-	GAME.Image.on('preLoad', ResLoad);
-	GAME.Audio.on('preLoad', ResLoad);
-	GAME.Image.on('loaded', ResLoad);
-	GAME.Audio.on('loaded', ResLoad);
-	GAME.Event.once(endEvent, function() {
-		GAME.Event.off('loging', Loging);
-		GAME.Event.off('resourceDownload', ResDownload);
-		GAME.Image.off('preLoad', ResLoad);
-		GAME.Audio.off('preLoad', ResLoad);
-		GAME.Image.off('loaded', ResLoad);
-		GAME.Audio.off('loaded', ResLoad);
-	});
-	return endEvent;
+	}
+	extendLoading(progress) {
+		this.emit('loading', progress);
+	}
+	extend(load) {
+		this.on('loading', this.extendLoading, load);
+		load.once('destroy', () => this.off('loading', this.extendLoading, load));
+		if (this.loading) this.loading.emit('loading', this.loading);
+	}
+	destroy() {
+		this.off('loading');
+		this.loading = null;
+		this.progresses.length = 0;
+		this.emit('finish');
+	}
 }

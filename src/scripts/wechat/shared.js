@@ -10,6 +10,6 @@ export default {
 		return this;
 	},
 	get Texture() {
-		return new GAME.Component.Texture(this.Context.canvas);
+		return new GAME.Component.Sprite(this.Context.canvas);
 	},
 };

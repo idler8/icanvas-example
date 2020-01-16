@@ -1,4 +1,4 @@
-export class Cutover extends GAME.Component.Texture {
+export class Cutover extends GAME.Component.Sprite {
 	constructor(Textures, defaultState = 0) {
 		super();
 		this.Textures = Textures;
@@ -63,14 +63,14 @@ export class Mask extends GAME.Component {
 }
 import { Power1 } from 'gsap';
 export class Turn extends GAME.Component {
-	Plate = new GAME.Component.Texture();
+	Plate = new GAME.Component.Sprite();
 	constructor(plate, middle) {
 		super();
-		this.addChild(this.Plate.setTexture(plate).setAnchorSize(), new GAME.Component.Texture(middle).setAnchorSize());
+		this.addChild(this.Plate.setTexture(plate).setAnchorSize(), new GAME.Component.Sprite(middle).setAnchorSize());
 	}
 	AddSomeThing(Angle = 0, text, img, scale = 1) {
-		let Text = new GAME.Component.Texture(text).setAnchorSize().setAngle(Angle);
-		let Img = new GAME.Component.Texture(img)
+		let Text = new GAME.Component.Sprite(text).setAnchorSize().setAngle(Angle);
+		let Img = new GAME.Component.Sprite(img)
 			.setAnchorSize()
 			.setAngle(Angle)
 			.setScale(scale, scale);
@@ -85,7 +85,7 @@ export class Turn extends GAME.Component {
 		});
 	}
 }
-export class Button extends GAME.Component.Texture {
+export class Button extends GAME.Component.Sprite {
 	touchStop = true;
 	Text = new GAME.Component.Text().setSpecial({ v: GAME.Image.get('object/button/video'), r: GAME.Image.get('object/button/restart') });
 	constructor(Images, Options) {

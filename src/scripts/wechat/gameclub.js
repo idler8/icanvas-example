@@ -11,10 +11,10 @@ export default {
 	},
 	SetSize(l, t, w, h) {
 		if (!this.Button) return;
-		this.Button.style.left = (l * GAME.Api.System.width) / GAME.Pos.width;
-		this.Button.style.top = (t * GAME.Api.System.height) / GAME.Pos.height;
-		this.Button.style.width = (w * GAME.Api.System.width) / GAME.Pos.width;
-		this.Button.style.height = (h * GAME.Api.System.height) / GAME.Pos.height;
+		this.Button.style.left = (l * GAME.System.width) / GAME.Pos.width;
+		this.Button.style.top = (t * GAME.System.height) / GAME.Pos.height;
+		this.Button.style.width = (w * GAME.System.width) / GAME.Pos.width;
+		this.Button.style.height = (h * GAME.System.height) / GAME.Pos.height;
 	},
 	Hide() {
 		if (!this.Button) return;

@@ -37,7 +37,7 @@ function createOpen(project, input, dynamic) {
 				exclude: ['node_modules/**', 'build/**'],
 				GAME: [path.resolve('./build/core/open.js'), 'default'],
 			}),
-			replace({ project, input, dynamic }),
+			replace({ project, input, dynamic, open: true }),
 			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
 		],
 	};

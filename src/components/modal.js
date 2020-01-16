@@ -5,18 +5,18 @@ export default class Modal extends Mask {
 		if (!Modal.Top.y) {
 			try {
 				let style = wx.getMenuButtonBoundingClientRect();
-				Modal.Top.x = (style.left / GAME.Api.System.width) * GAME.Pos.width;
-				Modal.Top.y = ((style.top + style.height / 2) / GAME.Api.System.height) * GAME.Pos.height;
+				Modal.Top.x = (style.left / GAME.System.width) * GAME.Pos.width;
+				Modal.Top.y = ((style.top + style.height / 2) / GAME.System.height) * GAME.Pos.height;
 			} catch (e) {
 				Modal.Top.zero();
 			}
 		}
 		if (!Modal.Top.x) Modal.Top.x = GAME.Pos.center;
 		if (!Modal.Top.y && GAME.System.wx.statusBarHeight) {
-			Modal.Top.y = (GAME.System.wx.statusBarHeight / GAME.Api.System.height) * GAME.Pos.height + 100;
+			Modal.Top.y = (GAME.System.wx.statusBarHeight / GAME.System.height) * GAME.Pos.height + 100;
 		}
 		if (!Modal.Top.y) Modal.Top.y = 200;
-		let add = new GAME.Component.Texture('modal/add').setAnchorSize(1, 0.67).setPosition(Modal.Top.x, Modal.Top.y);
+		let add = new GAME.Component.Sprite('modal/add').setAnchorSize(1, 0.67).setPosition(Modal.Top.x, Modal.Top.y);
 		this.addChild(add);
 		return this;
 	}
@@ -72,7 +72,7 @@ export class BoxModal extends GAME.Component {
 		this.setSize(width, height, radius);
 	}
 	AddTitle(title, color = '#FFFFFF') {
-		let background = new GAME.Component.Texture('modal/title').setAnchorSize(0.5, 0.4);
+		let background = new GAME.Component.Sprite('modal/title').setAnchorSize(0.5, 0.4);
 		background.setPosition(0, -this.size.y / 2);
 		let text = new GAME.Component.Text({ color, size: 36, weight: 'bold' }).setValue(title).setPosition(0, 6);
 		background.addChild(text);
@@ -80,7 +80,7 @@ export class BoxModal extends GAME.Component {
 		return this;
 	}
 	AddClose() {
-		let close = new GAME.Component.Texture('modal/close').setAnchorSize();
+		let close = new GAME.Component.Sprite('modal/close').setAnchorSize();
 		close.setPosition(this.size.x / 2 - 10, 10 - this.size.y / 2);
 		close.touchTap = () => {
 			this.setParent();

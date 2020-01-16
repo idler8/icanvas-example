@@ -40,7 +40,7 @@ export class Particle2 extends GAME.Component {
 		return this;
 	}
 	addParticle(x, y) {
-		let particle = new GAME.Component.Texture(this.Style)
+		let particle = new GAME.Component.Sprite(this.Style)
 			.setSizeLimit(60, 60)
 			.setAnchorSize()
 			.setScale(1 + GAME.Math.Random(20) / 100, 1 + GAME.Math.Random(20) / 100)
