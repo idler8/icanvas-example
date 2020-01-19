@@ -33,13 +33,10 @@ GAME.Text = class Text extends Core.Text {
 	get allFontSplit() {
 		return ENV.input.webgl ? true : false;
 	}
-	get precision() {
-		return ENV.input.webgl ? 36 : 0;
-	}
 	getElement(needSplit, value, option, needSprite) {
 		if (needSprite) return ENV.input.webgl || !value ? new GAME.Sprite(needSplit, option) : new Core.TextElement(value, option);
 		//TODO 动态增加字体
-		if (needSplit) GAME.Font.update(this.precision || option.size + 'px ' + option.family + (option.weight ? ' bold' : ''));
+		if (needSplit) GAME.Font.update((ENV.input.webgl ? 36 : option.size) + 'px ' + option.family + (option.weight ? ' bold' : ''));
 		return GAME.Font.get(value, option.size);
 	}
 };

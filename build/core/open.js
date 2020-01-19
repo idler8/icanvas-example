@@ -26,43 +26,17 @@ GAME.Sprite = class Sprite extends Core.Sprite {
 //文本组件
 GAME.Text = class Text extends Core.Text {
 	static defaultFont = { family: '微软雅黑', size: 36, weight: '' };
-	static test = GAME.Canvas().getContext('2d');
 	defaultFont(font) {
 		return Object.assign({}, Text.defaultFont, font);
 	}
-	pushTexture(line, sprite) {
-		if (this.wrapWidth >= 0 && line.width + sprite.width > this.wrapWidth) return false;
-		sprite.anchorX = -sprite.width / 2;
-		sprite.anchorY = -sprite.height / 2;
-		if (this.autoLineHeight && sprite.height > line.height) line.height = sprite.height;
-		line.textures.push(sprite);
-		line.updateFamily = true;
-		line.width += sprite.width;
-		return true;
+	get allFontSplit() {
+		return false;
 	}
-	getTexture(line, handle, value, isSpecial) {
-		if (!line) return false;
-		if (isSpecial) {
-			let sprite = new GAME.Sprite(value).setPosition(line.width, 0);
-			return this.pushTexture(line, sprite);
-		} else {
-			if (line.updateFamily) GAME.Text.test.font = handle.size + 'px ' + handle.family;
-			let width = GAME.Text.test.measureText(value).width;
-			if (this.wrapWidth >= 0 && line.width + width > this.wrapWidth) return false;
-			if (this.autoLineHeight && handle.size > line.height) line.height = handle.size;
-			if (line.updateFamily) {
-				let sprite = new Core.TextGroup(handle.size + 'px ' + handle.family, handle.fillStyle).setPosition(line.width, 0).setSize(width, handle.size);
-				sprite.values = value;
-				line.textures.push(sprite);
-				line.updateFamily = false;
-			} else {
-				let sprite = line.textures[line.textures.length - 1];
-				sprite.values += value;
-				sprite.width += width;
-			}
-			line.width += width;
-			return true;
-		}
+	getElement(needSplit, value, option, needSprite) {
+		if (needSprite) return !value ? new GAME.Sprite(needSplit, option) : new Core.TextElement(value, option);
+		//TODO 动态增加字体
+		if (needSplit) GAME.Font.update(option.size + 'px ' + option.family + (option.weight ? ' bold' : ''));
+		return GAME.Font.get(value, option.size);
 	}
 };
 // import { TweenLite, TimelineMax, Linear } from 'gsap/TweenMax';
@@ -76,7 +50,17 @@ let Texture = Core.TextureFactory(false);
 GAME.Render = new Core.CanvasRender({ canvas: GAME.Canvas('main') }); //主渲染器
 let ImageTexture = Core.ImageTextureFactory(Texture);
 GAME.Image = new (Core.TextureControlFactory(ImageLoader, ImageTexture))(); //图片(纹理)控制器
-
+GAME.Font = {
+	test: GAME.Canvas().getContext('2d'),
+	update(family) {
+		this.test.font = family;
+	},
+	get(value, size) {
+		let text = this.test.measureText(value);
+		text.size = size;
+		return text;
+	},
+};
 // GAME.Audio = new (Wxgame.AudioControlFactory(Core.Loader))(); //音频控制器
 
 GAME.Collision = new Core.Collision(); //碰撞检测机制
@@ -89,12 +73,10 @@ GAME.Touch.on('touchEnd', touch => {
 });
 
 GAME.SetSize = function(x, y) {
-	let offsetWidth = GAME.System.width;
-	let offsetHeight = GAME.System.height;
+	y = y || (x / GAME.System.width) * GAME.System.height;
 	GAME.Director.size.set(x, y); //主场景缩放
-	GAME.Touch.size.set(x / offsetWidth, y / offsetHeight); //触摸控制
-	GAME.Touch.offset.x = offsetWidth / 2;
-	GAME.Touch.offset.y = offsetHeight / 2;
+	GAME.Touch.size.set(x / GAME.System.width, y / GAME.System.height); //触摸控制
+	GAME.Touch.offset.set(GAME.System.width / 2, GAME.System.height / 2);
 	GAME.Director.look(new GAME.Matrix4().translate(x / 2, y / 2));
 };
 
