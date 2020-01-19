@@ -17,7 +17,6 @@ GAME.Director.Switch = Type => {
 	GAME.Event.emit('draw');
 };
 GAME.SetSize(750, 750 / GAME.Api.System.ratio); //初始化渲染器
-GAME.Event.on('draw', () => GAME.Render.Update(GAME.Director, GAME.Context));
 
 var Current = Promise.resolve(); //生成队列
 wx.onMessage(data => {

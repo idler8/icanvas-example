@@ -45,7 +45,7 @@ GAME.TWEEN = TimelineMax;
 /**
  * 运行实例
  */
-GAME.Image = new (Core.TextureControlFactory(Web.ImageControlFactory(Core.Loader), Core.BaseTexture))(); //图片(纹理)控制器
+GAME.Image = new (Core.TextureControlFactory(Wxgame.ImageControlFactory(Core.Loader), Core.BaseTexture))(); //图片(纹理)控制器
 if (ENV.input.webgl) {
 	GAME.Render = new Core.WebGLRender({ canvas: GAME.Canvas('main') }); //主渲染器
 	GAME.Font = new (Core.FontControlFactory(() => GAME.Canvas(2048, 2048), Core.FontTexture))('36px 微软雅黑', '36px 微软雅黑 bold'); //字体（纹理）控制器
@@ -63,7 +63,7 @@ if (ENV.input.webgl) {
 		},
 	};
 }
-GAME.Audio = new (Web.AudioControlFactory(Core.Loader))(); //音频控制器
+GAME.Audio = new (Wxgame.AudioControlFactory(Core.Loader))(); //音频控制器
 
 GAME.Collision = new Core.Collision(); //碰撞检测机制
 GAME.Touch = new Core.Touch(); //触摸整合实例

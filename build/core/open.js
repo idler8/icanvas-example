@@ -45,11 +45,8 @@ GAME.Text = class Text extends Core.Text {
 /**
  * 运行实例
  */
-let ImageLoader = Wxgame.ImageControlFactory(Core.Loader);
-let Texture = Core.TextureFactory(false);
+GAME.Image = new (Core.TextureControlFactory(Wxgame.ImageControlFactory(Core.Loader), Core.BaseTexture))(); //图片(纹理)控制器
 GAME.Render = new Core.CanvasRender({ canvas: GAME.Canvas('main') }); //主渲染器
-let ImageTexture = Core.ImageTextureFactory(Texture);
-GAME.Image = new (Core.TextureControlFactory(ImageLoader, ImageTexture))(); //图片(纹理)控制器
 GAME.Font = {
 	test: GAME.Canvas().getContext('2d'),
 	update(family) {
@@ -61,6 +58,7 @@ GAME.Font = {
 		return text;
 	},
 };
+
 // GAME.Audio = new (Wxgame.AudioControlFactory(Core.Loader))(); //音频控制器
 
 GAME.Collision = new Core.Collision(); //碰撞检测机制
