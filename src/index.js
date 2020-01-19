@@ -12,7 +12,7 @@ import HomeScene from './scenes/home.js';
 import PlayScene from './scenes/play.js';
 GAME.Director.setScenes({ Load: LoadScene, Home: HomeScene, Play: PlayScene });
 //初始化项目
-GAME.SetSize(750, (750 / GAME.System.width) * GAME.System.height); //初始化渲染器并按60帧刷新
+GAME.SetSize(750); //初始化渲染器并按60帧刷新
 
 //初始化资源加载监听器
 import * as Loader from './scripts/loader.js';

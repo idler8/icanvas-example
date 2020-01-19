@@ -106,19 +106,21 @@ export default class Home extends GAME.Container {
 		this.Share.name = 'Share';
 		this.Audio.name = 'Audio';
 		this.Background.name = 'Background';
-		new GAME.Text({ font: { size: 36 }, color: 0xff0000, value: '开始游戏<i=load/shadow>\n富文<size=16>本<i=load/shadow>测<fillStyle=#FFFFFF>试' }).put(
-			this.Play,
-		);
+		new GAME.Text({
+			font: { size: 30, fillStyle: '#ff0000' },
+			icons: { s: GAME.Image.get('load/shadow') },
+			value: '开始<fillStyle=#FFFFFF>游戏<fillStyle=@><i=s>\n富文<size=26>本<i=s>测<fillStyle=#E0A0FF>试',
+		}).put(this.Play);
 		this.Play.touchTap = () => {
 			console.log('Play');
 			GAME.Director.Go('Play');
 		};
-		new GAME.Text({ font: { size: 36 }, color: 0x000000, value: '排行榜' }).put(this.Rank);
+		new GAME.Text({ font: { size: 36, fillStyle: '#00ff00' }, value: '排行榜' }).put(this.Rank);
 		this.Rank.touchTap = () => {
 			console.log('Rank');
 			// GAME.Director.addChild(new Board());
 		};
-		new GAME.Text({ font: { size: 36 }, color: 0xff00ff, value: '分享' }).put(this.Share);
+		new GAME.Text({ font: { size: 36, fillStyle: '#ff00ff' }, value: '分享' }).put(this.Share);
 		this.Share.touchTap = () => {
 			console.log('Share');
 			// GAME.Reward('Home');
