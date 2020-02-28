@@ -1,4 +1,4 @@
-class Avatar extends GAME.Component.Texture {
+class Avatar extends GAME.Sprite {
 	setTexture(image) {
 		return super
 			.setTexture(image)
@@ -17,10 +17,10 @@ class Avatar extends GAME.Component.Texture {
 		Context.restore();
 	}
 }
-class Box1 extends GAME.Component {
+class Box1 extends GAME.Container {
 	UserAvatar = new Avatar().setPosition(70, 70);
-	Super = new GAME.Component.Text().setValue('即将超越').setPosition(70, 160);
-	Score = new GAME.Component.Text({ color: '#FFFC00' }).setPosition(70, 190);
+	Super = new GAME.Text().setValue('即将超越').setPosition(70, 160);
+	Score = new GAME.Text({ color: '#FFFC00' }).setPosition(70, 190);
 	constructor() {
 		super().addChild(this.UserAvatar, this.Super, this.Score);
 	}
@@ -28,14 +28,14 @@ class Box1 extends GAME.Component {
 		Context.ArcRect(0, 0, 140, 210, 10).Fill('rgba(0,0,0,0.5)');
 	}
 }
-class Box2 extends GAME.Component {
-	UserAvatar = new GAME.Component.Texture().setPosition(GAME.Pos.center, 370);
-	Score = new GAME.Component.Text({ size: 30 }).setPosition(GAME.Pos.center, 480);
+class Box2 extends GAME.Container {
+	UserAvatar = new GAME.Sprite().setPosition(GAME.Pos.center, 370);
+	Score = new GAME.Text({ size: 30 }).setPosition(GAME.Pos.center, 480);
 	constructor() {
 		super().addChild(this.UserAvatar, this.Score);
 	}
 }
-export default class Before extends GAME.Component {
+export default class Before extends GAME.Container {
 	Box1 = new Box1();
 	Box2 = new Box2();
 	constructor() {
@@ -49,7 +49,7 @@ export default class Before extends GAME.Component {
 	}
 	SetBefore(before, key, score) {
 		this.visible = before ? true : false;
-		if (!this.visible) return GAME.Event.emit('draw');
+		if (!this.visible) return app.tick();
 		if (!score && this.Before == before) return;
 		this.Before = before;
 		Promise.resolve()
@@ -57,20 +57,20 @@ export default class Before extends GAME.Component {
 				this.Box1.Score.setValue(before.values[key]);
 				let score2 = before.values[key] - score;
 				this.Box2.Score.setValue(score2 ? '还差' + score2 + '分超越好友' : '');
-				GAME.Event.emit('draw');
+				app.tick();
 			})
-			.then(() => GAME.Shared.SetUserInfo(before))
+			.then(() => app.shared.SetUserInfo(before))
 			// .then(() => {
 			// 	this.NickName.setValue(before.info.nickName);
-			// 	GAME.Event.emit('draw');
+			// 	app.tick();
 			// })
-			.then(() => GAME.Shared.SetImage(before))
+			.then(() => app.shared.SetImage(before))
 			.then(() => {
 				this.Box1.UserAvatar.setTexture(before.info.avatarUrl);
 				this.Box2.UserAvatar.setTexture(before.info.avatarUrl)
 					.setSize(130, 130)
 					.setAnchorSize();
-				GAME.Event.emit('draw');
+				app.tick();
 			});
 	}
 }

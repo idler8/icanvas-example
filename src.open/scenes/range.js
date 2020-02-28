@@ -1,4 +1,4 @@
-export default class Range extends GAME.Component {
+export default class Range extends GAME.Container {
 	Range = null;
 	update(Context) {
 		if (!this.Range) return;
@@ -21,19 +21,19 @@ export default class Range extends GAME.Component {
 	}
 	SetRange(range) {
 		this.Range = range;
-		GAME.Event.emit('draw');
+		app.tick();
 		Promise.resolve()
-			.then(() => GAME.Shared.SetUserInfo(range))
+			.then(() => app.shared.SetUserInfo(range))
 			.then(() => {
-				GAME.Event.emit('draw');
+				app.tick();
 			})
-			.then(() => GAME.Shared.SetImage(range))
+			.then(() => app.shared.SetImage(range))
 			.then(() => {
-				GAME.Event.emit('draw');
+				app.tick();
 			});
 	}
 	SortKey = GAME.Options.Keys[0];
 	RangeHandle() {
-		GAME.Shared.Range(this.SortKey);
+		app.shared.Range(this.SortKey);
 	}
 }

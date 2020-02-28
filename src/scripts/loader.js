@@ -79,7 +79,7 @@ export function Remote(url, loaded) {
 	loaded(100);
 	return Promise.resolve({
 		assetsUrl: url,
-		resourceMap: ENV.dynamic.resourceMap.remote,
+		resourceMap: ENV.dynamic.resource.remote,
 	});
 }
 export class Progress extends GAME.Event {
@@ -146,4 +146,23 @@ export class Listen extends GAME.Event {
 		this.progresses.length = 0;
 		this.emit('finish');
 	}
+}
+export function loadMap(map = {}, root = '', perfix = '', exts) {
+	let Result = {};
+	Object.keys(map).forEach(k => {
+		if (k == '_') {
+			if (exts.indexOf(map[k]) == -1) return;
+			let key = perfix.slice(0, -1);
+			let url = root + perfix.slice(0, -1) + '.' + map[k];
+			Result[key] = url;
+		} else if (typeof map[k] == 'string') {
+			if (exts.indexOf(map[k]) == -1) return;
+			let key = perfix + k;
+			let url = root + perfix + k + '.' + map[k];
+			Result[key] = url;
+		} else {
+			Object.assign(Result, loadMap(map[k], root, perfix + k + '/', exts));
+		}
+	});
+	return Result;
 }

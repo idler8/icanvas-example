@@ -47,7 +47,8 @@ function create(project, input, dynamic) {
 			commonjs(),
 			inject({
 				exclude: ['node_modules/**', 'build/**'],
-				GAME: [path.resolve('./build/core/web.js'), 'default'],
+				GAME: [path.resolve('./build/core/web.js'), 'GAME'],
+				app: [path.resolve('./build/core/web.js'), 'app'],
 			}),
 			replace({ project, input, dynamic }),
 			htmlTemplate({

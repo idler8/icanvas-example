@@ -87,17 +87,30 @@
 // 		if (GAME.Api.Login.GetUserInfo.Abort) GAME.Api.Login.GetUserInfo.Abort();
 // 	}
 // }
+import playScene from './play.js';
 export default class Home extends GAME.Container {
-	Background = new GAME.Sprite('play/bg').setSize(GAME.Director.width, GAME.Director.height);
-	Play = new GAME.Sprite('play/Common//button').setSize(200, 100).setPosition(-200, -100);
-	Rank = new GAME.Sprite('play/Common//button').setSize(200, 100).setPosition(200, -100);
-	Share = new GAME.Sprite('play/Common//button').setSize(200, 100).setPosition(-200, 100);
-	Audio = new GAME.Sprite('play/Common//button').setSize(200, 100).setPosition(200, 100);
+	Background = app.sprite('play/bg').setSize(750, 1334);
+	Play = app
+		.sprite('play/Common//button')
+		.setSize(200, 100)
+		.setPosition(-200, -100);
+	Rank = app
+		.sprite('play/Common//button')
+		.setSize(200, 100)
+		.setPosition(200, -100);
+	Share = app
+		.sprite('play/Common//button')
+		.setSize(200, 100)
+		.setPosition(-200, 100);
+	Audio = app
+		.sprite('play/Common//button')
+		.setSize(200, 100)
+		.setPosition(200, 100);
 	create() {
-		GAME.Audio.get('home').play();
+		app.audio.get('home').play();
 	}
 	destroy() {
-		GAME.Audio.get('home').stop();
+		app.audio.get('home').stop();
 	}
 	constructor() {
 		super();
@@ -106,33 +119,40 @@ export default class Home extends GAME.Container {
 		this.Share.name = 'Share';
 		this.Audio.name = 'Audio';
 		this.Background.name = 'Background';
-		new GAME.Text({
-			font: { size: 30, fillStyle: '#ff0000' },
-			icons: { s: GAME.Image.get('load/shadow') },
-			value: '开始<fillStyle=#FFFFFF>游戏<fillStyle=@><i=s>\n富文<size=26>本<i=s>测<fillStyle=#E0A0FF>试',
+		// new GAME.Text({
+		// 	font: { size: 36, fillStyle: '#ff0000' },
+		// 	icons: { s: GAME.Image.get('load/shadow') },
+		// 	value: '开始游戏<i=s>\n富文<size=16>本<i=s>测<fillStyle=#FFFFFF>试',
+		// }).put(this.Play);
+		app.text({
+			fillStyle: '#ff0000',
+			icons: { s: app.image.get('load/shadow') },
+			value: '开始游戏<i=s>\n富文<size=16>本<i=s>测<fillStyle=#FFFFFF>试',
 		}).put(this.Play);
 		this.Play.touchTap = () => {
 			console.log('Play');
-			GAME.Director.Go('Play');
+			app.go(new playScene());
 		};
-		new GAME.Text({ font: { size: 36, fillStyle: '#00ff00' }, value: '排行榜' }).put(this.Rank);
+		// new GAME.LineText({ font: { size: 26, fillStyle: '#00ff00' }, value: '排行榜' }).put(this.Rank);
+		app.text({ size: 20, fillStyle: '#00ff00', value: '排行榜' }).put(this.Rank);
 		this.Rank.touchTap = () => {
 			console.log('Rank');
 			// GAME.Director.addChild(new Board());
 		};
-		new GAME.Text({ font: { size: 36, fillStyle: '#ff00ff' }, value: '分享' }).put(this.Share);
+		// new GAME.Text({ font: { size: 36, fillStyle: '#ff00ff' }, value: '分享' }).put(this.Share);
 		this.Share.touchTap = () => {
 			console.log('Share');
 			// GAME.Reward('Home');
 		};
-		let Auido = new GAME.Text({ font: { size: 26 } });
-		Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开').put(this.Audio);
-		this.Audio.touchTap = () => {
-			console.log('Audio');
-			GAME.Audio.mute = !GAME.Audio.mute;
-			Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开');
-			return 'refresh';
-		};
+		// let Auido = new GAME.Text({ font: { size: 26 } });
+		// Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开').put(this.Audio);
+		// this.Audio.touchTap = () => {
+		// 	console.log('Audio');
+		// 	GAME.Audio.mute = !GAME.Audio.mute;
+		// 	Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开');
+		// 	return 'refresh';
+		// };
+		console.log(this);
 		this.add(this.Background, this.Play, this.Rank, this.Share, this.Audio);
 		// return new GAME.Component.Scroll(this, { clip: { x: 0, y: 0, width: GAME.Pos.width, height: GAME.Pos.height } }).refresh(
 		// 	GAME.Pos.width + 200,

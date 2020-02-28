@@ -47,7 +47,8 @@ function create(project, input, dynamic) {
 			commonjs({}),
 			inject({
 				exclude: ['node_modules/**', 'build/**'],
-				GAME: [path.resolve('./build/core/wxgame.js'), 'default'],
+				GAME: [path.resolve('./build/core/wxgame.js'), 'GAME'],
+				app: [path.resolve('./build/core/wxgame.js'), 'app'],
 			}),
 			replace({ project, input, dynamic }),
 			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),

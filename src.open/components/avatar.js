@@ -1,4 +1,4 @@
-export default class Avatar extends GAME.Component.Texture {
+export default class Avatar extends GAME.Sprite {
 	Radius = 50;
 	constructor(avatar, size) {
 		super(avatar).setSize(size, size);

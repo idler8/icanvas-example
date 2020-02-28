@@ -1,5 +1,5 @@
 import UserAvatar from '../components/avatar.js';
-class UserBar extends GAME.Component {
+class UserBar extends GAME.Container {
 	SetAvatar(key) {
 		new UserAvatar(key, 100)
 			.setAnchorSize()
@@ -9,12 +9,12 @@ class UserBar extends GAME.Component {
 	}
 	SetSort(i) {
 		if (i == 1 || i == 2 || i == 3) {
-			new GAME.Component.Texture('sort/' + i)
+			new GAME.Sprite('sort/' + i)
 				.setAnchorSize()
 				.setPosition(60, 0)
 				.setParent(this);
 		} else {
-			new GAME.Component.Text({ size: 34, color: '#9F6226', weight: 'bold' })
+			new GAME.Text({ size: 34, color: '#9F6226', weight: 'bold' })
 				.setValue(i)
 				.setPosition(60, 0)
 				.setParent(this);
@@ -22,21 +22,21 @@ class UserBar extends GAME.Component {
 		return this;
 	}
 	SetName(info) {
-		new GAME.Component.Text({ size: 30, color: '#664A32', align: 'left' })
+		new GAME.Text({ size: 30, color: '#664A32', align: 'left' })
 			.setValue(info.nickName || '**' + info.openid.slice(-4))
 			.setPosition(240, 0)
 			.setParent(this);
 		return this;
 	}
 	SetScore(score) {
-		new GAME.Component.Text({ size: 30, color: '#664A32', align: 'right' })
+		new GAME.Text({ size: 30, color: '#664A32', align: 'right' })
 			.setValue(score)
 			.setPosition(600, 0)
 			.setParent(this);
 		return this;
 	}
 }
-class MySelf extends GAME.Component {
+class MySelf extends GAME.Container {
 	SetAvatar(key) {
 		if (key === undefined) return this;
 		new UserAvatar(key, 100)
@@ -48,12 +48,12 @@ class MySelf extends GAME.Component {
 	SetSort(i) {
 		if (i === undefined) return this;
 		if (i == 1 || i == 2 || i == 3) {
-			new GAME.Component.Texture('sort/' + i)
+			new GAME.Sprite('sort/' + i)
 				.setAnchorSize()
 				.setPosition(50, 0)
 				.setParent(this);
 		} else {
-			new GAME.Component.Text({ size: 34, color: '#9F6226', weight: 'bold' })
+			new GAME.Text({ size: 34, color: '#9F6226', weight: 'bold' })
 				.setValue(i)
 				.setPosition(50, 0)
 				.setParent(this);
@@ -61,7 +61,7 @@ class MySelf extends GAME.Component {
 		return this;
 	}
 	SetName(info) {
-		new GAME.Component.Text({ size: 30, color: '#664A32', align: 'left' })
+		new GAME.Text({ size: 30, color: '#664A32', align: 'left' })
 			.setValue(info.nickName || '**' + info.openid.slice(-4))
 			.setPosition(240, 0)
 			.setParent(this);
@@ -69,15 +69,15 @@ class MySelf extends GAME.Component {
 	}
 	SetScore(score) {
 		if (score === undefined) return this;
-		new GAME.Component.Text({ size: 30, color: '#664A32', align: 'right' })
+		new GAME.Text({ size: 30, color: '#664A32', align: 'right' })
 			.setValue(score)
 			.setPosition(640, 0)
 			.setParent(this);
 		return this;
 	}
 }
-export default class extends GAME.Component {
-	Scroll = new GAME.Component.Scroll({ width: 650, height: 710, realWidth: 650, realHeight: 710 }).setPosition(50, GAME.Pos.middle - 380);
+export default class extends GAME.Container {
+	Scroll = new GAME.Container.Scroll({ width: 650, height: 710, realWidth: 650, realHeight: 710 }).setPosition(50, GAME.Pos.middle - 380);
 	MySelf = new MySelf().setPosition(50, GAME.Pos.middle + 400);
 	constructor() {
 		super();
@@ -86,9 +86,9 @@ export default class extends GAME.Component {
 	Options = { Sort: '', Keys: [], Start: 0, End: -1, Users: [] };
 	TouchMove(touch) {
 		if (!this.Scroll.touchMoveY(touch.endY - touch.moveY)) return;
-		GAME.Event.emit('draw');
-		if (this.Scroll.scrollAt.y >= this.Scroll.scrollHeight) GAME.Shared.BoardAddUser(this.Options.Sort, this.Options.End + 1, this.Options.End + 10);
-		if (this.Scroll.scrollAt.y <= 0) GAME.Shared.BoardAddUser(this.Options.Sort, this.Options.Start - 10, this.Options.Start - 1);
+		app.tick();
+		if (this.Scroll.scrollAt.y >= this.Scroll.scrollHeight) app.shared.BoardAddUser(this.Options.Sort, this.Options.End + 1, this.Options.End + 10);
+		if (this.Scroll.scrollAt.y <= 0) app.shared.BoardAddUser(this.Options.Sort, this.Options.Start - 10, this.Options.Start - 1);
 	}
 	TouchEnd(touch) {
 		let MoveTime = touch.endTime - touch.startTime;
@@ -103,12 +103,12 @@ export default class extends GAME.Component {
 			if (!this.parent) return;
 			let Now = Date.now();
 			if (!this.Scroll.touchMoveY(Speed * (Now - Time))) return console.log('到底了');
-			GAME.Event.emit('draw');
+			app.tick();
 			Speed += ASpeed;
 			if (Speed * ASpeed > 0) return;
 			this.InertiaMove(Speed, ASpeed, Now);
-			if (this.Scroll.scrollAt.y >= this.Scroll.scrollHeight) GAME.Shared.BoardAddUser(this.Options.Sort, this.Options.End + 1, this.Options.End + 10);
-			if (this.Scroll.scrollAt.y <= 0) GAME.Shared.BoardAddUser(this.Options.Sort, this.Options.Start - 10, this.Options.Start - 1);
+			if (this.Scroll.scrollAt.y >= this.Scroll.scrollHeight) app.shared.BoardAddUser(this.Options.Sort, this.Options.End + 1, this.Options.End + 10);
+			if (this.Scroll.scrollAt.y <= 0) app.shared.BoardAddUser(this.Options.Sort, this.Options.Start - 10, this.Options.Start - 1);
 		}, 16);
 	}
 	create() {
@@ -133,9 +133,9 @@ export default class extends GAME.Component {
 		this.MySelf.SetSort(user.sorts[this.Options.Sort])
 			.SetScore(user.values[this.Options.Keys[0]])
 			.SetName(user.info);
-		GAME.Shared.SetImage(user).then(() => {
+		app.shared.SetImage(user).then(() => {
 			this.MySelf.SetAvatar(user.info.avatarUrl);
-			GAME.Event.emit('draw');
+			app.tick();
 		});
 	}
 	//添加用户
@@ -180,10 +180,10 @@ export default class extends GAME.Component {
 		return Promise.resolve()
 			.then(() => this.UsersPosition())
 			.then(() => this.ReDrawUsers())
-			.then(() => GAME.Shared.SetUserInfo(users))
+			.then(() => app.shared.SetUserInfo(users))
 			.then(() => users.forEach((user, i) => Bars[i].SetName(user.info)))
 			.then(() => this.ReDrawUsers())
-			.then(() => GAME.Shared.SetImage(users))
+			.then(() => app.shared.SetImage(users))
 			.then(() => users.forEach((user, i) => Bars[i].SetAvatar(user.info.avatarUrl)))
 			.then(() => this.ReDrawUsers())
 			.catch(e => console.log(e));
@@ -200,6 +200,6 @@ export default class extends GAME.Component {
 			this.Scroll.context.canvas.height = this.Options.Users.length * 120 + 40;
 			GAME.Render.Update(this.Options.Users, this.Scroll.context);
 		}
-		GAME.Event.emit('draw');
+		app.tick();
 	}
 }

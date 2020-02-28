@@ -1,14 +1,16 @@
+import homeScene from './home.js';
 class Enemy extends GAME.Sprite {
-	Animation = new GAME.TWEEN({ paused: true }).to(this, 3, { y: GAME.Director.height }).set(this, { visible: false });
+	constructor() {
+		super({ texture: app.image.get('play/enemy') });
+		this.on('destroy', () => this.Animation.kill());
+	}
+	Animation = new GAME.TWEEN({ paused: true }).to(this, 3, { y: app.shape.height }).set(this, { visible: false });
 	Reset() {
 		this.x = GAME.Random(375, -375);
-		this.y = -GAME.Director.height / 2;
+		this.y = -app.shape.height / 2;
 		this.Animation.play(0);
 		this.visible = true;
 		return this;
-	}
-	destory() {
-		this.Animation.kill();
 	}
 }
 class Enemys extends GAME.Container {
@@ -31,95 +33,96 @@ class Enemys extends GAME.Container {
 			let enemy = this.children[i];
 			if (!enemy.visible) continue;
 			enemyVisibleLength++;
-			if (enemy.position.y >= GAME.Director.height) enemy.Reset();
-			if (!GAME.Collision.InComponent(enemy, position)) continue;
-			return GAME.Director.Go('Home');
+			if (enemy.y >= app.shape.height) enemy.Reset();
+			if (!app.collision.InComponent(enemy, position)) continue;
+			return app.go(new homeScene());
 		}
 		if (enemyVisibleLength < this.Total) this.Send();
 	}
 	Send() {
 		let enemy = this.children.find(e => !e.visible);
-		if (!enemy) this.add((enemy = new Enemy('play/enemy')));
+		if (!enemy) this.add((enemy = new Enemy()));
 		enemy.Animation.timeScale(this.Slow ? 0.1 : 1);
 		enemy.Reset();
 	}
 }
 class Bullet extends GAME.Sprite {
-	preUpdate(renderer) {
-		this.y -= this.parent.Slow ? 1 : 10;
-		if (this.y < -GAME.Director.height / 2) this.visible = false;
-		return super.preUpdate(renderer);
+	constructor() {
+		super({ scaleX: 0.3, scaleY: 0.3, texture: app.image.get('play/bullet') });
+		this.on('check', function() {
+			this.y -= this.parent.Slow ? 1 : 10;
+			if (this.y < -app.shape.height / 2) this.visible = false;
+		});
 	}
-	Collision(enemys, j) {
+	Collision(enemys) {
 		if (!this.visible) return;
-		let vector = this.getWorldVector();
+		let vector = this.getWorldVector(new GAME.Vector2());
 		for (let i = 0; i < enemys.length; i++) {
 			if (!enemys[i].visible) continue;
-			if (!GAME.Collision.InComponent(enemys[i], vector)) continue;
+			if (!app.collision.InComponent(enemys[i], vector)) continue;
 			enemys[i].visible = false;
 			this.visible = false;
-			GAME.Audio.get('boom').play();
-			return GAME.Director.CurrentScene.emit('Boom', vector.clone());
+			app.audio.get('boom').play();
+			return app.stage.children[0].emit('Boom', this.x, this.y);
 		}
 	}
 }
 class Bullets extends GAME.Container {
 	Slow = true;
-	Send(position) {
+	Send(x, y) {
 		let bullet = this.children.find(b => !b.visible);
-		if (!bullet) this.add((bullet = new Bullet('play/bullet', { scale: 0.3 })));
-		bullet.x = position.x;
-		bullet.y = position.y - 35;
+		if (!bullet) this.add((bullet = new Bullet()));
+		bullet.x = x;
+		bullet.y = y - 35;
 		bullet.visible = true;
-		GAME.Audio.get('bullet').play();
+		app.audio.get('bullet').play();
 	}
 	Collision(enemys) {
 		for (let i = 0; i < this.children.length; i++) {
-			this.children[i].Collision(enemys, i);
+			this.children[i].Collision(enemys);
 		}
 	}
 }
 class Background extends GAME.Container {
-	Background1 = new GAME.Sprite('play/bg').setSize(GAME.Director.width, GAME.Director.height);
-	Background2 = new GAME.Sprite('play/bg').setSize(GAME.Director.width, GAME.Director.height).setPosition(0, -GAME.Director.height);
+	Background1 = app.sprite('play/bg', { width: app.shape.width, height: app.shape.height });
+	Background2 = app.sprite('play/bg', { width: app.shape.width, height: app.shape.height, y: -app.shape.height });
 	constructor() {
 		super();
 		this.add(this.Background1, this.Background2);
-	}
-	preUpdate(renderer) {
-		this.y++;
-		if (this.y >= GAME.Director.height) this.y = 0;
-		super.preUpdate(renderer);
+		this.on('check', function() {
+			this.y++;
+			if (this.y >= app.shape.height) this.y = 0;
+		});
 	}
 }
 class Boom extends GAME.Sprite {
 	State = 20;
 	Textures = Array.apply(null, { length: 19 }).map((_, i) => 'play/explosion' + (i + 1));
 	constructor() {
-		super(null, { scale: 5 });
-	}
-	preUpdate(renderer) {
-		if (this.State >= this.Textures.length) return true;
-		this.State++;
-		this.setTexture(this.Textures[this.State]);
-		return super.preUpdate(renderer);
+		super({ scaleX: 5, scaleY: 5 });
+		this.on('check', function() {
+			if (this.State >= this.Textures.length) return true;
+			this.State++;
+			this.texture = app.image.get(this.Textures[this.State]);
+		});
 	}
 }
 class Booms extends GAME.Container {
-	Boom(vector) {
+	Boom(x, y) {
 		let boom = this.children.find(b => b.State >= b.Textures.length);
 		if (!boom) this.add((boom = new Boom()));
-		boom.position.setApply(this.getLocalVector(vector));
+		boom.x = x;
+		boom.y = y;
 		boom.State = 0;
 	}
 }
 export default class Play extends GAME.Container {
 	Background = new Background();
-	Player = new GAME.Sprite('play/hero').setPosition(0, GAME.Director.height / 2 - 200);
+	Player = app.sprite('play/hero', { y: app.shape.height / 2 - 200 });
 	Enemys = new Enemys();
 	Bullets = new Bullets();
 	Booms = new Booms();
-	Animation = new GAME.TWEEN({ repeat: -1 }).addCallback(() => this.Bullets.Send(this.Player.position), 0.2);
+	Animation = new GAME.TWEEN({ repeat: -1 }).addCallback(() => this.Bullets.Send(this.Player.x, this.Player.y), 0.2);
 	Level = new GAME.TWEEN({ repeat: -1 }).addCallback(() => this.Enemys.Total++, 30);
 	constructor() {
 		super().add(this.Background, this.Player, this.Enemys, this.Bullets, this.Booms);
@@ -129,24 +132,35 @@ export default class Play extends GAME.Container {
 		this.Level.timeScale(0.1);
 		this.Bullets.Slow = true;
 		this.Enemys.Slow = true;
-		this.listen('create', 'destroy');
-		this.on('Boom', this.Booms.Boom, this.Booms);
-		document.addEventListener('keydown', function(e) {
-			if (e.keyCode == 32) GAME.Render.Clock.interval = 10000000 / 1;
+		this.on('create', function() {
+			app.audio.get('bgm').play();
+			app.audio.get('bgm').loop();
+			app.touch.on('touchStart', this.TouchStart, this);
+			app.touch.on('touchMove', this.TouchMove, this);
+			app.touch.on('touchEnd', this.TouchEnd, this);
 		});
-	}
-	preUpdate(renderer) {
-		this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(-60, -40)));
-		this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(60, -40)));
-		this.Bullets.Collision(this.Enemys.children);
-		return super.preUpdate(renderer);
+		this.on('destroy', function() {
+			app.audio.get('bgm').stop();
+			app.touch.off('touchStart', this.TouchStart, this);
+			app.touch.off('touchMove', this.TouchMove, this);
+			app.touch.off('touchEnd', this.TouchEnd, this);
+			this.Animation.kill();
+			this.Level.kill();
+		});
+		this.on('Boom', this.Booms.Boom, this.Booms);
+		this.on('check', function() {
+			this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(-60, -40)));
+			this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(60, -40)));
+			this.Bullets.Collision(this.Enemys.children);
+		});
+		this.Player.transform.debug = true;
 	}
 	TouchStart(touch) {
 		this.Animation.timeScale(1);
 		this.Level.timeScale(1);
 		this.Bullets.Slow = false;
 		this.Enemys.Slow = false;
-		if (GAME.Collision.InComponent(this.Player, GAME.Director.getWorldVector(touch, true))) {
+		if (app.collision.InComponent(this.Player, app.stage.getWorldVector(touch, true))) {
 			this.Player.Moving = true;
 		}
 	}
@@ -161,20 +175,5 @@ export default class Play extends GAME.Container {
 		this.Bullets.Slow = true;
 		this.Enemys.Slow = true;
 		this.Player.Moving = false;
-	}
-	create() {
-		GAME.Audio.get('bgm').play();
-		GAME.Audio.get('bgm').loop();
-		GAME.Touch.on('touchStart', this.TouchStart, this);
-		GAME.Touch.on('touchMove', this.TouchMove, this);
-		GAME.Touch.on('touchEnd', this.TouchEnd, this);
-	}
-	destroy() {
-		GAME.Audio.get('bgm').stop();
-		GAME.Touch.off('touchStart', this.TouchStart, this);
-		GAME.Touch.off('touchMove', this.TouchMove, this);
-		GAME.Touch.off('touchEnd', this.TouchEnd, this);
-		this.Animation.kill();
-		this.Level.kill();
 	}
 }

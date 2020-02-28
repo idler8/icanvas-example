@@ -35,7 +35,8 @@ function createOpen(project, input, dynamic) {
 			commonjs(),
 			inject({
 				exclude: ['node_modules/**', 'build/**'],
-				GAME: [path.resolve('./build/core/open.js'), 'default'],
+				GAME: [path.resolve('./build/core/open.js'), 'GAME'],
+				app: [path.resolve('./build/core/open.js'), 'app'],
 			}),
 			replace({ project, input, dynamic, open: true }),
 			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
@@ -64,7 +65,7 @@ function create(project, input, dynamic) {
 								src: '**',
 								dest: 'wx_game/' + dynamic.name + '/' + input.qiniu + '/remote.zip',
 								zip(zip) {
-									zip.append(JSON.stringify(dynamic.resourceMap.remote), { name: 'option.json' });
+									zip.append(JSON.stringify(dynamic.resource.remote), { name: 'option.json' });
 								},
 							},
 							// { src: 'resource/remote/**', dest: 'wx_game/' + dynamic.name + '/' + input.qiniu + '/', zip: false },
@@ -84,7 +85,8 @@ function create(project, input, dynamic) {
 			commonjs(),
 			inject({
 				exclude: ['node_modules/**', 'build/**'],
-				GAME: [path.resolve('./build/core/wxgame.js'), 'default'],
+				GAME: [path.resolve('./build/core/wxgame.js'), 'GAME'],
+				app: [path.resolve('./build/core/wxgame.js'), 'app'],
 			}),
 			replace({ project, input, dynamic }),
 			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
