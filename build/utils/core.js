@@ -5,8 +5,14 @@ export function getDynamic(project, input) {
 	let dynamic = {};
 	dynamic.buildAt = Date.now();
 	dynamic.name = pinyin(project.name, { style: 'toneWithNumber' }).join('');
-	dynamic.resourceMap = dirToJson('./resource');
+	dynamic.resource = dirToJson('./resource');
+	dynamic.src = dirToJson('./src');
 	return dynamic;
+}
+export function mergeScene(scenes, base = {}) {
+	return Object.keys(scenes).reduce((o, p) => {
+		return { [p + 'Scene']: [path.resolve('./src/scenes/' + p + '.js'), 'default'], ...o };
+	}, base);
 }
 export function getInput(args) {
 	return Object.assign(
