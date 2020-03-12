@@ -1,6 +1,5 @@
-import * as Core from '@icanvas/core';
-export default app.cache = function(container, options = {}) {
-	let sprite = new Core.Sprite(options);
+app.cache = function(container, options = {}) {
+	let sprite = new GAME.Sprite(options);
 	sprite.texture = app.canvas();
 	sprite.container = container;
 	sprite.refresh = function(x, y) {

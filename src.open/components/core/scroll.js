@@ -1,4 +1,3 @@
-import * as Core from '@icanvas/core';
 class ScrollContainer extends Core.Container {
 	constructor(options = {}) {
 		super(options);
@@ -32,30 +31,6 @@ class ScrollElement extends Core.Container {
 		});
 		this.invertMatrix = new Core.Matrix4();
 		this.invertMatrixId = 0;
-		this.on('draw', function(gl, dirty) {
-			let { x, y } = this.getWorldVector(new Core.Vector3());
-			if (ENV.input.webgl) {
-				let vx = ((x + 1) * app.stage.width) / 2;
-				let vy = ((y + 1) * app.stage.height) / 2 - this.container.height;
-				gl.enable(gl.SCISSOR_TEST);
-				gl.scissor(vx, vy, this.container.width, this.container.height);
-				// gl.clear(gl.COLOR_BUFFER_BIT);
-			} else {
-				gl.setTransform(1, 0, 0, 1, 0, 0);
-				gl.save();
-				gl.beginPath();
-				gl.rect(x, y, this.container.width, this.container.height);
-				gl.clip();
-				// gl.fillRect(0, 0, app.stage.width, app.stage.height);
-			}
-			let renderArray = [];
-			this.container.pushTo(renderArray);
-			for (let i = 0, len = renderArray.length; i < len; i++) app.render(renderArray[i], gl, app.dirty);
-			ENV.input.webgl ? gl.disable(gl.SCISSOR_TEST) : gl.restore();
-		});
-		this.on('check', function(array) {
-			array.push(this);
-		});
 	}
 	updateTransformInvert() {
 		if (this.invertMatrixId == this.transformId) return;
@@ -72,6 +47,27 @@ class ScrollElement extends Core.Container {
 		let vector = touch.add(this.container.x, -this.container.y).multiplyMatrix4(this.container.matrix);
 		app.collision.Recursive(this.container, vector);
 	}
+	render(gl) {
+		let { x, y } = this.getWorldVector(new Core.Vector3());
+		if (ENV.input.webgl) {
+			let vx = ((x + 1) * app.stage.width) / 2;
+			let vy = ((y + 1) * app.stage.height) / 2 - this.container.height;
+			gl.enable(gl.SCISSOR_TEST);
+			gl.scissor(vx, vy, this.container.width, this.container.height);
+			// gl.clear(gl.COLOR_BUFFER_BIT);
+		} else {
+			gl.setTransform(1, 0, 0, 1, 0, 0);
+			gl.save();
+			gl.beginPath();
+			gl.rect(x, y, this.container.width, this.container.height);
+			gl.clip();
+			// gl.fillRect(0, 0, app.stage.width, app.stage.height);
+		}
+		let renderArray = [];
+		this.container.pushTo(renderArray);
+		for (let i = 0, len = renderArray.length; i < len; i++) app.render(renderArray[i], gl, app.dirty);
+		ENV.input.webgl ? gl.disable(gl.SCISSOR_TEST) : gl.restore();
+	}
 	touchMove(touch) {
 		let vector = touch.clone();
 		if (!this.checkPoint(vector.multiplyMatrix4(app.stage.matrix))) return;
@@ -79,7 +75,7 @@ class ScrollElement extends Core.Container {
 		this.container.touchMoveY(touch.tick.y);
 	}
 }
-export default app.scroll = function(container, scrollOptions) {
+app.scroll = function(container, scrollOptions) {
 	let scrollContainer = new ScrollContainer(scrollOptions || { height: 300, realHeight: 600 });
 	scrollContainer.add(container);
 	scrollContainer.parent = new ScrollElement(scrollContainer);

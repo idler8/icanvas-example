@@ -1,4 +1,4 @@
-// const THREE = import('../scripts/three.js');
+// const THREE = import('../plugins/three.js');
 import * as THREE from './three.js';
 import FileLoaderFactory from './FileLoader.js';
 const FileLoader = FileLoaderFactory(THREE);

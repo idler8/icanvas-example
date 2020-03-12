@@ -1,25 +1,24 @@
 //挂载组件生成器
-import '../scripts/components/sprite.js';
-import '../scripts/components/scroll.js';
-import '../scripts/components/text.js';
-// import '../scripts/components/cache.js';
+import '../plugins/components/sprite.js';
+import '../plugins/components/scroll.js';
+import '../plugins/components/text.js';
+// import '../plugins/components/cache.js';
 // 挂载场景
 import loadScene from './scenes/load.js';
 import homeScene from './scenes/home.js';
 app.stage.set(loadScene, homeScene);
-console.log(loadScene.name, homeScene.name);
 // 全局数据库预设配置
-import Database from './scripts/database.js';
+import Database from '../plugins/database.js';
 app.data = new Database('global_' + ENV.input.mode);
 app.data.Map('Setting').Merge({ Audio: true, Shock: true });
 //开放域
-// import Shared from './scripts/wechat/shared.js';
+// import Shared from '../plugins/wechat/shared.js';
 // GAME.Shared = Shared.SetSize(750, 750 / GAME.System.ratio);
 //初始化项目
 app.run({ width: 750, interval: 1000 / 60 });
 
 //初始化资源加载监听器
-import * as Loader from './scripts/loader.js';
+import * as Loader from '../plugins/loader.js';
 let ResLoader = new Loader.Listen();
 //运行流程
 Promise.all([

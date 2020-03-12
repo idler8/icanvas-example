@@ -49,10 +49,10 @@ class Enemys extends GAME.Container {
 class Bullet extends GAME.Sprite {
 	constructor() {
 		super({ scaleX: 0.3, scaleY: 0.3, texture: app.image.get('play/bullet') });
-		this.on('check', function() {
-			this.y -= this.parent.Slow ? 1 : 10;
-			if (this.y < 0) this.visible = false;
-		});
+	}
+	preUpdate() {
+		this.y -= this.parent.Slow ? 1 : 10;
+		if (this.y < 0) this.visible = false;
 	}
 	Collision(enemys) {
 		if (!this.visible) return;
@@ -90,10 +90,10 @@ class Background extends GAME.Container {
 	constructor() {
 		super();
 		this.add(this.Background1, this.Background2);
-		this.on('check', function() {
-			this.y++;
-			if (this.y >= app.stage.middle) this.y = -app.stage.middle;
-		});
+	}
+	preUpdate() {
+		this.y++;
+		if (this.y >= app.stage.middle) this.y = -app.stage.middle;
 	}
 }
 class Boom extends GAME.Sprite {
@@ -101,13 +101,11 @@ class Boom extends GAME.Sprite {
 	Textures = Array.apply(null, { length: 19 }).map((_, i) => 'play/explosion' + (i + 1));
 	constructor() {
 		super({ scaleX: 5, scaleY: 5 });
-		this.off('check');
-		this.on('check', function(array) {
-			if (this.State >= this.Textures.length) return;
-			this.texture = app.image.get(this.Textures[this.State]);
-			array.push(this);
-			this.State++;
-		});
+	}
+	preUpdate() {
+		if (this.State >= this.Textures.length) return true;
+		this.texture = app.image.get(this.Textures[this.State]);
+		this.State++;
 	}
 }
 class Booms extends GAME.Container {
@@ -151,11 +149,11 @@ export default class Play extends GAME.Container {
 			this.Level.kill();
 		});
 		this.on('Boom', this.Booms.Boom, this.Booms);
-		this.on('check', function() {
-			this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(-60, -40)));
-			this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(60, -40)));
-			this.Bullets.Collision(this.Enemys.children);
-		});
+	}
+	preUpdate() {
+		this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(-60, -40)));
+		this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(60, -40)));
+		this.Bullets.Collision(this.Enemys.children);
 	}
 	TouchStart(touch) {
 		this.Animation.timeScale(1);

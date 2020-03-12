@@ -100,12 +100,12 @@ export default class Home extends GAME.Container {
 		.setPosition(-200, -100);
 	// .setPosition(-200, -100);
 	Rank = app
-		.sprite('play/Common')
+		.sprite('play/Common', { opacity: 0.5 })
 		.setClip(app.image.get('play/Common').sprite.button)
 		.setSize(200, 100)
 		.setPosition(200, -100);
 	Share = app
-		.sprite('play/Common')
+		.sprite('play/Common', { alpha: 0.5 })
 		.setClip(app.image.get('play/Common').sprite.button)
 		.setSize(200, 100)
 		.setPosition(-200, 100);

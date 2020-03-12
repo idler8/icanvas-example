@@ -1,13 +1,13 @@
 //挂载组件生成器
-import '../scripts/components/sprite.js';
-import '../scripts/components/scroll.js';
-import '../scripts/components/text.js';
-// import '../scripts/components/cache.js';
+import '../plugins/components/sprite.js';
+import '../plugins/components/scroll.js';
+import '../plugins/components/text.js';
+// import '../plugins/components/cache.js';
 //载入项目配置
-import Shared from './scripts/shared.js';
+import Shared from '../plugins/shared.js';
 app.shared = new Shared();
 
-app.run({ width: 750 });
+app.resize(750); //初始化渲染器
 
 var Current = Promise.resolve(); //生成队列
 wx.onMessage(data => {

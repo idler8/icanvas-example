@@ -123,7 +123,7 @@ class RichAttrs {
 				} else if (element.action == 'i') {
 					let image = element.arg;
 					let dy = offsetTop + (height - image.height) * 0.5;
-					context.drawImage(image, offsetLeft, dy, image.width, image.height);
+					context.drawImage(image.source, offsetLeft, dy, image.width, image.height);
 					offsetLeft += image.width;
 				} else if (element.action == 'fillStyle') {
 					handle[element.action] = element.arg;
@@ -151,7 +151,6 @@ class RichText extends Core.Sprite {
 		if (!options.text) throw '富文本计算器不存在';
 		this.text = options.text;
 		this.needUpdateValue = false;
-		this.on('draw', this.refresh);
 	}
 	get value() {
 		return this._value;
@@ -162,19 +161,19 @@ class RichText extends Core.Sprite {
 		this._value = newValue;
 		this.needUpdateValue = true;
 	}
-	refresh() {
+	preUpdate() {
 		if (!this.needUpdateValue && !this.text.needUpdate) return;
-		if (!this.texture.context) this.texture.context = this.texture.getContext('2d');
-		this.text.compute(this.texture.context, this.value);
+		this.text.compute(this.texture.getContext('2d'), this.value);
 		this.text.needUpdate = false;
 		this.needUpdateValue = false;
-		this.texture.needUpdate = true;
+		this.texture.update();
 		this.width = this.texture.width;
 		this.height = this.texture.height;
 	}
+	refresh = this.preUpdate;
 }
 export default app.text = function(font, options = {}) {
-	options.texture = app.canvas();
+	options.texture = new Core.ImageSource(app.canvas());
 	options.text = new RichAttrs(font);
 	let text = new RichText(options);
 	text.value = font.value || '';
