@@ -1,13 +1,12 @@
-import homeScene from './home.js';
 class Enemy extends GAME.Sprite {
 	constructor() {
 		super({ texture: app.image.get('play/enemy') });
 		this.on('destroy', () => this.Animation.kill());
 	}
-	Animation = new GAME.TWEEN({ paused: true }).to(this, 3, { y: app.shape.height }).set(this, { visible: false });
+	Animation = new GAME.TWEEN({ paused: true }).to(this, 3, { y: app.stage.height }).set(this, { visible: false });
 	Reset() {
-		this.x = GAME.Random(375, -375);
-		this.y = -app.shape.height / 2;
+		this.x = app.random(app.stage.width);
+		this.y = 0;
 		this.Animation.play(0);
 		this.visible = true;
 		return this;
@@ -33,9 +32,10 @@ class Enemys extends GAME.Container {
 			let enemy = this.children[i];
 			if (!enemy.visible) continue;
 			enemyVisibleLength++;
-			if (enemy.y >= app.shape.height) enemy.Reset();
+			if (enemy.y >= app.stage.height) enemy.Reset();
+			enemy.updateTransform();
 			if (!app.collision.InComponent(enemy, position)) continue;
-			return app.go(new homeScene());
+			return app.stage.go('Home');
 		}
 		if (enemyVisibleLength < this.Total) this.Send();
 	}
@@ -51,7 +51,7 @@ class Bullet extends GAME.Sprite {
 		super({ scaleX: 0.3, scaleY: 0.3, texture: app.image.get('play/bullet') });
 		this.on('check', function() {
 			this.y -= this.parent.Slow ? 1 : 10;
-			if (this.y < -app.shape.height / 2) this.visible = false;
+			if (this.y < 0) this.visible = false;
 		});
 	}
 	Collision(enemys) {
@@ -75,6 +75,7 @@ class Bullets extends GAME.Container {
 		bullet.x = x;
 		bullet.y = y - 35;
 		bullet.visible = true;
+		bullet.updateTransform();
 		app.audio.get('bullet').play();
 	}
 	Collision(enemys) {
@@ -84,14 +85,14 @@ class Bullets extends GAME.Container {
 	}
 }
 class Background extends GAME.Container {
-	Background1 = app.sprite('play/bg', { width: app.shape.width, height: app.shape.height });
-	Background2 = app.sprite('play/bg', { width: app.shape.width, height: app.shape.height, y: -app.shape.height });
+	Background1 = app.sprite('play/bg', { width: app.stage.width, height: app.stage.height, x: app.stage.center });
+	Background2 = app.sprite('play/bg', { width: app.stage.width, height: app.stage.height, x: app.stage.center, y: app.stage.height });
 	constructor() {
 		super();
 		this.add(this.Background1, this.Background2);
 		this.on('check', function() {
 			this.y++;
-			if (this.y >= app.shape.height) this.y = 0;
+			if (this.y >= app.stage.middle) this.y = -app.stage.middle;
 		});
 	}
 }
@@ -100,10 +101,12 @@ class Boom extends GAME.Sprite {
 	Textures = Array.apply(null, { length: 19 }).map((_, i) => 'play/explosion' + (i + 1));
 	constructor() {
 		super({ scaleX: 5, scaleY: 5 });
-		this.on('check', function() {
-			if (this.State >= this.Textures.length) return true;
-			this.State++;
+		this.off('check');
+		this.on('check', function(array) {
+			if (this.State >= this.Textures.length) return;
 			this.texture = app.image.get(this.Textures[this.State]);
+			array.push(this);
+			this.State++;
 		});
 	}
 }
@@ -118,7 +121,7 @@ class Booms extends GAME.Container {
 }
 export default class Play extends GAME.Container {
 	Background = new Background();
-	Player = app.sprite('play/hero', { y: app.shape.height / 2 - 200 });
+	Player = app.sprite('play/hero', { x: app.stage.center, y: app.stage.height - 200 });
 	Enemys = new Enemys();
 	Bullets = new Bullets();
 	Booms = new Booms();
@@ -153,7 +156,6 @@ export default class Play extends GAME.Container {
 			this.Enemys.Collision(this.Player.getWorldVector(new GAME.Vector2(60, -40)));
 			this.Bullets.Collision(this.Enemys.children);
 		});
-		this.Player.transform.debug = true;
 	}
 	TouchStart(touch) {
 		this.Animation.timeScale(1);

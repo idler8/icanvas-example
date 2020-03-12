@@ -1,18 +1,22 @@
-// 全局数据库
+//挂载组件生成器
+import './components/core/sprite.js';
+import './components/core/scroll.js';
+import './components/core/text.js';
+// import './components/core/cache.js';
+// 挂载场景
+import loadScene from './scenes/load.js';
+import homeScene from './scenes/home.js';
+app.stage.set(loadScene, homeScene);
+// 全局数据库预设配置
 import Database from './scripts/database.js';
-GAME.Data = new Database('global_' + ENV.input.mode);
-// 游戏设置
-GAME.Data.Map('Setting').Merge({ Audio: true, Shock: true });
+app.data = new Database('global_' + ENV.input.mode);
+app.data.Map('Setting').Merge({ Audio: true, Shock: true });
 //开放域
 // import Shared from './scripts/wechat/shared.js';
 // GAME.Shared = Shared.SetSize(750, 750 / GAME.System.ratio);
-//载入场景
 //初始化项目
-app.resize(750); //设置场景大小
-app.clock.run(1000 / 60); //按60帧刷新
+app.run({ width: 750, interval: 1000 / 60 });
 
-import loadScene from './scenes/load.js';
-import homeScene from './scenes/home.js';
 //初始化资源加载监听器
 import * as Loader from './scripts/loader.js';
 let ResLoader = new Loader.Listen();
@@ -20,11 +24,12 @@ let ResLoader = new Loader.Listen();
 Promise.all([
 	Promise.all([
 		app.image.loads(Loader.loadMap(ENV.dynamic.resource.local, 'resource/local/', '', ['png', 'jpg'])), //载入本地图片
-		GAME.Data.Map('Setting')
+		app.data
+			.Map('Setting')
 			.GetStorage(true)
-			.then(() => (app.audio.mute = !GAME.Data.Map('Setting').Get('Audio'))), //读取声音配置
+			.then(() => (app.audio.mute = !app.data.Map('Setting').Get('Audio'))), //读取声音配置
 	]),
-	// .then(() => app.go(new loadScene(ResLoader))),
+	// .then(() => app.stage.go(new loadScene(ResLoader))),
 	Promise.resolve(ResLoader.add('资源包下载', 100))
 		.then(DownloadLoader => Loader.Remote(ENV.dynamic.assetsUrl || 'resource/remote', progress => (DownloadLoader.current = progress)))
 		.then(res => {
@@ -37,12 +42,14 @@ Promise.all([
 			return Promise.all([app.image.loads(images, '', () => ImageLoader.current++), app.audio.loads(audios, '', () => AudioLoader.current++)]);
 		})
 		.then(() => {
-			app.image.sprite('play/Common', 'button', 121, 7.3, 37, 21.7);
+			app.image.get('play/Common').sprite = {
+				button: { x: 121, y: 7.3, width: 37, height: 21.7 },
+			};
 		}),
 	// Promise.resolve().then(() => (ResLoader.add('登陆', 5, 0).current = 5)), //用户登陆
 ])
 	.then(() => ResLoader.destroy())
-	.then(() => app.go(new homeScene())) //显示主要界面
+	.then(() => app.stage.go('Home')) //显示主要界面
 	.catch(e => {
 		//载入出错
 		console.error(e);

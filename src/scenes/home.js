@@ -89,21 +89,29 @@
 // }
 import playScene from './play.js';
 export default class Home extends GAME.Container {
-	Background = app.sprite('play/bg').setSize(750, 1334);
+	Background = app
+		.sprite('play/bg')
+		.setPosition(app.stage.width / 2, app.stage.height / 2)
+		.setSize(app.stage.width, app.stage.height);
 	Play = app
-		.sprite('play/Common//button')
+		.sprite('play/Common')
+		.setClip(app.image.get('play/Common').sprite.button)
 		.setSize(200, 100)
 		.setPosition(-200, -100);
+	// .setPosition(-200, -100);
 	Rank = app
-		.sprite('play/Common//button')
+		.sprite('play/Common')
+		.setClip(app.image.get('play/Common').sprite.button)
 		.setSize(200, 100)
 		.setPosition(200, -100);
 	Share = app
-		.sprite('play/Common//button')
+		.sprite('play/Common')
+		.setClip(app.image.get('play/Common').sprite.button)
 		.setSize(200, 100)
 		.setPosition(-200, 100);
 	Audio = app
-		.sprite('play/Common//button')
+		.sprite('play/Common')
+		.setClip(app.image.get('play/Common').sprite.button)
 		.setSize(200, 100)
 		.setPosition(200, 100);
 	create() {
@@ -114,11 +122,6 @@ export default class Home extends GAME.Container {
 	}
 	constructor() {
 		super();
-		this.Play.name = 'Play';
-		this.Rank.name = 'Rank';
-		this.Share.name = 'Share';
-		this.Audio.name = 'Audio';
-		this.Background.name = 'Background';
 		// new GAME.Text({
 		// 	font: { size: 36, fillStyle: '#ff0000' },
 		// 	icons: { s: GAME.Image.get('load/shadow') },
@@ -131,7 +134,7 @@ export default class Home extends GAME.Container {
 		}).put(this.Play);
 		this.Play.touchTap = () => {
 			console.log('Play');
-			app.go(new playScene());
+			app.stage.go(new playScene());
 		};
 		// new GAME.LineText({ font: { size: 26, fillStyle: '#00ff00' }, value: '排行榜' }).put(this.Rank);
 		app.text({ size: 20, fillStyle: '#00ff00', value: '排行榜' }).put(this.Rank);
@@ -139,21 +142,36 @@ export default class Home extends GAME.Container {
 			console.log('Rank');
 			// GAME.Director.addChild(new Board());
 		};
-		// new GAME.Text({ font: { size: 36, fillStyle: '#ff00ff' }, value: '分享' }).put(this.Share);
+		app.text({ size: 36, fillStyle: '#00ff00', value: '分享' }).put(this.Share);
 		this.Share.touchTap = () => {
 			console.log('Share');
 			// GAME.Reward('Home');
 		};
-		// let Auido = new GAME.Text({ font: { size: 26 } });
-		// Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开').put(this.Audio);
-		// this.Audio.touchTap = () => {
-		// 	console.log('Audio');
-		// 	GAME.Audio.mute = !GAME.Audio.mute;
-		// 	Auido.setValue(GAME.Audio.mute ? '声音:关' : '声音:开');
-		// 	return 'refresh';
-		// };
-		console.log(this);
-		this.add(this.Background, this.Play, this.Rank, this.Share, this.Audio);
+		let audio = app.text({ size: 26, value: app.audio.mute ? '声音:关' : '声音:开' }).put(this.Audio);
+		this.Audio.touchTap = () => {
+			console.log('Audio');
+			app.audio.mute = !app.audio.mute;
+			audio.value = app.audio.mute ? '声音:关' : '声音:开';
+			return 'refresh';
+		};
+		this.add(this.Background);
+		this.Background.add(this.Play, this.Rank, this.Share, this.Audio);
+
+		let scrollContainer = app
+			.sprite('play/Common')
+			.setClip(app.image.get('play/Common').sprite.button)
+			.setSize(200, 100)
+			.setPosition(0, 300);
+		scrollContainer.touchTap = touch => {
+			console.log('滚动按钮');
+		};
+		let scroll = app.scroll(scrollContainer).setPosition(100, 100);
+		let test = new GAME.Container({ x: 100, y: 100 });
+		test.add(scroll);
+		this.add(test);
+		this.touchTap = () => {
+			test.x += 100;
+		};
 		// return new GAME.Component.Scroll(this, { clip: { x: 0, y: 0, width: GAME.Pos.width, height: GAME.Pos.height } }).refresh(
 		// 	GAME.Pos.width + 200,
 		// 	GAME.Pos.height + 400,
