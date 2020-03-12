@@ -39,7 +39,7 @@ function createOpen(project, input, dynamic) {
 				app: [path.resolve('./build/core/open.js'), 'app'],
 			}),
 			replace({ project, input, dynamic, open: true }),
-			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
+			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true }, keep_fnames: true }),
 		],
 	};
 }
@@ -89,7 +89,7 @@ function create(project, input, dynamic) {
 				app: [path.resolve('./build/core/wxgame.js'), 'app'],
 			}),
 			replace({ project, input, dynamic }),
-			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
+			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: false, drop_debugger: false }, keep_fnames: true }),
 		],
 	};
 }

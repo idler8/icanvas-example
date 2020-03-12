@@ -57,7 +57,7 @@ function create(project, input, dynamic) {
 				target: '../web/index.html',
 				replaceVars: { __TITLE__: project.name },
 			}),
-			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
+			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true }, keep_fnames: true }),
 		],
 	};
 }

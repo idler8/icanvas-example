@@ -7,6 +7,7 @@ import '../scripts/components/text.js';
 import loadScene from './scenes/load.js';
 import homeScene from './scenes/home.js';
 app.stage.set(loadScene, homeScene);
+console.log(loadScene.name, homeScene.name);
 // 全局数据库预设配置
 import Database from './scripts/database.js';
 app.data = new Database('global_' + ENV.input.mode);

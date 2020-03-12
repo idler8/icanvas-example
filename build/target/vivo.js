@@ -51,7 +51,7 @@ function create(project, input, dynamic) {
 				app: [path.resolve('./build/core/wxgame.js'), 'app'],
 			}),
 			replace({ project, input, dynamic }),
-			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true } }),
+			input.mode == 'production' && terser({ sourcemap: false, compress: { drop_console: true, drop_debugger: true }, keep_fnames: true }),
 		],
 	};
 }
