@@ -33,11 +33,10 @@ app.dirty = new Core.Dirty(600); //脏检查器
 app.run = function(options) {
 	let { width, height, interval } = options;
 	//设置场景大小和视角
-	if (!height) height = (x / app.sys.width) * app.sys.height;
+	if (!height) height = (width / app.sys.width) * app.sys.height;
 	app.stage.width = app.context.canvas.width = width;
 	app.stage.height = app.context.canvas.height = height;
-	app.touch.size.set(x / app.sys.width, y / app.sys.height); //触摸控制
-	app.touch.offset.set(app.sys.width, app.sys.height);
+	app.touch.size.set(width / app.sys.width, height / app.sys.height); //触摸控制
 	Wxgame.Touch()(app.touch);
 	app.touch.on('touchEnd', touch => {
 		if (touch.long > 200 || touch.distance > 12) return;

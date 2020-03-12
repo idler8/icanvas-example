@@ -1,7 +1,4 @@
-import boardScene from '../scenes/board.js';
-import beforeScene from '../scenes/before.js';
-import rangeScene from '../scenes/range.js';
-let scenes = { board: boardScene, before: beforeScene, range: rangeScene };
+let scenes = { board: null, before: null, range: null };
 export default class {
 	Receive(data) {
 		return Promise.resolve()

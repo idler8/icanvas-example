@@ -1,8 +1,8 @@
 //挂载组件生成器
-import './components/core/sprite.js';
-import './components/core/scroll.js';
-import './components/core/text.js';
-// import './components/core/cache.js';
+import '../scripts/components/sprite.js';
+import '../scripts/components/scroll.js';
+import '../scripts/components/text.js';
+// import '../scripts/components/cache.js';
 // 挂载场景
 import loadScene from './scenes/load.js';
 import homeScene from './scenes/home.js';
