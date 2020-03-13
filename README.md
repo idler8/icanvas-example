@@ -15,7 +15,7 @@ npm install
 ## 开发
 
 ### 核心代码库
-[@icanvas/core](https://idler8.github.io/icanvas?_blank)
+[@icanvas/core](https://github.com/idler8/icanvas)
 ### 运行浏览器开发模式
 ```bash
 #运行开发模式
