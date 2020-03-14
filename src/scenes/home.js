@@ -32,7 +32,7 @@
 // 			this.Friend.State = true;
 // 			this.World.State = false;
 // 			GAME.Shared.Send({
-// 				friend: { sorts: ['SaveKey2'], keys: { ['HighScore' + ENV.input.mode]: 'SaveKey2' } },
+// 				friend: { sorts: ['SaveKey2'], keys: { ['HighScore' + ENV.mode]: 'SaveKey2' } },
 // 				scene: 'Board',
 // 				board: { sort: 'SaveKey2', keys: ['SaveKey2'] },
 // 			});
@@ -64,7 +64,7 @@
 // 		Context.drawImage(face, 0, 400);
 // 	}
 // 	create() {
-// 		if (ENV.input.target != 'wxgame') return;
+// 		if (ENV.target != 'wxgame') return;
 // 		if (GAME.User.Map('ServerInfo').Get('nickname')) return;
 // 		GAME.Api.Login({
 // 			left: 10,
@@ -83,7 +83,7 @@
 // 	}
 // 	destroy() {
 // 		GAME.Shared.Send({ scene: 'Null' });
-// 		if (ENV.input.target != 'wxgame') return;
+// 		if (ENV.target != 'wxgame') return;
 // 		if (GAME.Api.Login.GetUserInfo.Abort) GAME.Api.Login.GetUserInfo.Abort();
 // 	}
 // }
@@ -114,12 +114,7 @@ export default class Home extends GAME.Container {
 		.setClip(app.image.get('play/Common').sprite.button)
 		.setSize(200, 100)
 		.setPosition(200, 100);
-	create() {
-		app.audio.get('home').play();
-	}
-	destroy() {
-		app.audio.get('home').stop();
-	}
+
 	constructor() {
 		super();
 		// new GAME.Text({
@@ -147,11 +142,11 @@ export default class Home extends GAME.Container {
 			console.log('Share');
 			// GAME.Reward('Home');
 		};
-		let audio = app.text({ size: 26, value: app.audio.mute ? '声音:关' : '声音:开' }).put(this.Audio);
+		let audio = app.text({ size: 26, value: app.audio.muted() ? '声音:关' : '声音:开' }).put(this.Audio);
 		this.Audio.touchTap = () => {
 			console.log('Audio');
-			app.audio.mute = !app.audio.mute;
-			audio.value = app.audio.mute ? '声音:关' : '声音:开';
+			app.audio.muted(!app.audio.muted());
+			audio.value = app.audio.muted() ? '声音:关' : '声音:开';
 			return 'refresh';
 		};
 		this.add(this.Background);
@@ -172,6 +167,12 @@ export default class Home extends GAME.Container {
 		this.touchTap = () => {
 			test.x += 100;
 		};
+		this.on('create', function() {
+			app.audio.get('home').play(true);
+		});
+		this.on('destroy', function() {
+			app.audio.get('home').stop();
+		});
 		// return new GAME.Component.Scroll(this, { clip: { x: 0, y: 0, width: GAME.Pos.width, height: GAME.Pos.height } }).refresh(
 		// 	GAME.Pos.width + 200,
 		// 	GAME.Pos.height + 400,

@@ -15,7 +15,7 @@ npm install
 ## 开发
 
 ### 核心代码库
-[@icanvas/core](https://github.com/idler8/icanvas)
+[@icanvas/core](https://idler8.github.io/icanvas?_blank)
 ### 运行浏览器开发模式
 ```bash
 #运行开发模式
@@ -26,7 +26,7 @@ npm run serve
 ```
 ### 进行代码开发
 - 编译文件夹 build/ 放置多种游戏编译目标逻辑
-  - 项目配置 build/project.json 默认映射为全局ENV.project变量
+  - 项目配置 build/project.json 
   - 开发 build/serve.js 编译为浏览器实时开发模式
   - 微信 build/wxgame.js 编译为微信包
   - 浏览器 build/web.js 编译为浏览器包

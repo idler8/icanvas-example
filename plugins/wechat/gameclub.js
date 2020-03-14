@@ -1,6 +1,6 @@
 export default {
 	Button: null,
-	Good: ENV.input.target == 'wxgame' ? typeof wx.createGameClubButton === 'function' : false,
+	Good: ENV.target == 'wxgame' ? typeof wx.createGameClubButton === 'function' : false,
 	Show(l, t, w, h) {
 		if (!this.Good) return console.warn('不支持Banner广告');
 		this.Hide();

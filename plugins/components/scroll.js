@@ -57,7 +57,7 @@ class ScrollElement extends Core.Container {
 	}
 	render(gl, dirty) {
 		let { x, y } = this.getWorldVector(new Core.Vector3());
-		if (ENV.input.webgl) {
+		if (ENV.webgl) {
 			let vx = ((x + 1) * app.stage.width) / 2;
 			let vy = ((y + 1) * app.stage.height) / 2 - this.container.height;
 			gl.enable(gl.SCISSOR_TEST);
@@ -72,7 +72,7 @@ class ScrollElement extends Core.Container {
 			// gl.fillRect(0, 0, app.stage.width, app.stage.height);
 		}
 		app.render(this.container.pushTo(), gl, dirty);
-		ENV.input.webgl ? gl.disable(gl.SCISSOR_TEST) : gl.restore();
+		ENV.webgl ? gl.disable(gl.SCISSOR_TEST) : gl.restore();
 	}
 }
 export default app.scroll = function(container, scrollOptions) {

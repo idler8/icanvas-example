@@ -6,10 +6,11 @@ import '../plugins/components/text.js';
 // 挂载场景
 import loadScene from './scenes/load.js';
 import homeScene from './scenes/home.js';
-app.stage.set(loadScene, homeScene);
+app.stage.set('Load', loadScene);
+app.stage.set('Home', homeScene);
 // 全局数据库预设配置
 import Database from '../plugins/database.js';
-app.data = new Database('global_' + ENV.input.mode);
+app.data = new Database('global_' + ENV.mode);
 app.data.Map('Setting').Merge({ Audio: true, Shock: true });
 //开放域
 // import Shared from '../plugins/wechat/shared.js';
@@ -23,15 +24,15 @@ let ResLoader = new Loader.Listen();
 //运行流程
 Promise.all([
 	Promise.all([
-		app.image.loads(Loader.loadMap(ENV.dynamic.resource.local, 'resource/local/', '', ['png', 'jpg'])), //载入本地图片
+		app.image.loads(Loader.loadMap(ENV.resource.local, 'resource/local/', '', ['png', 'jpg'])), //载入本地图片
 		app.data
 			.Map('Setting')
 			.GetStorage(true)
-			.then(() => (app.audio.mute = !app.data.Map('Setting').Get('Audio'))), //读取声音配置
+			.then(() => app.audio.muted(!app.data.Map('Setting').Get('Audio'))), //读取声音配置
 	]),
 	// .then(() => app.stage.go(new loadScene(ResLoader))),
 	Promise.resolve(ResLoader.add('资源包下载', 100))
-		.then(DownloadLoader => Loader.Remote(ENV.dynamic.assetsUrl || 'resource/remote', progress => (DownloadLoader.current = progress)))
+		.then(DownloadLoader => Loader.Remote(ENV.assetsUrl || 'resource/remote', progress => (DownloadLoader.current = progress)))
 		.then(res => {
 			console.log('得到远程资源路径', res);
 			// GAME.Shared.Send({ resource: GAME.Image.loadMap(res.resourceMap.rank, res.assetsUrl + '/rank/', '', ['png', 'jpg']) });

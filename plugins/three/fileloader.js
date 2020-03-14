@@ -1,6 +1,6 @@
 import { UtilVary } from '@icanvas/core-wxgame';
 export default function FileLoaderFactory(THREE) {
-	if (ENV.input.target != 'wxgame') return;
+	if (ENV.target != 'wxgame') return;
 	var loading = {};
 	let ReadFile = UtilVary('readFile', wx.getFileSystemManager());
 	return class FileLoader extends THREE.Loader {

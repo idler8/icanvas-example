@@ -1,7 +1,3 @@
-import boardScene from '../scenes/board.js';
-import beforeScene from '../scenes/before.js';
-import rangeScene from '../scenes/range.js';
-let scenes = { board: boardScene, before: beforeScene, range: rangeScene };
 export default class {
 	Receive(data) {
 		return Promise.resolve()
@@ -14,7 +10,7 @@ export default class {
 			.then(() => data.upload && this.Upload(data.upload)) //上传数据
 			.then(() => data.unlock && Object.keys(this.Lock).forEach(k => (this.Lock[k] = 0))) //解除所有缓存锁
 			.then(() => data.merge && this.Merge(data.merge.data, data.merge.keys, data.merge.sorts)) //合并外部数据
-			.then(() => data.scene && app.stage.go(new scenes[data.scene]())) //显示界面
+			.then(() => data.scene && app.stage.go(data.scene)) //显示界面
 			.then(() => data.board && this.Board(data.board.sort, data.board.keys)) //往界面上发送好友榜数据
 			.then(() => data.before && this.Before(data.before.key, data.before.score, data.before.force)) //往界面上发送超越数据
 			.then(() => data.range && this.Range()) //往界面上发送前中后范围数据

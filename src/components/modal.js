@@ -22,7 +22,7 @@ export default class Modal extends Mask {
 	}
 	constructor(color) {
 		super(color);
-		if (ENV.input.target == 'wxgame') this.AddTopTip();
+		if (ENV.target == 'wxgame') this.AddTopTip();
 	}
 }
 export const Background = function() {

@@ -1,6 +1,6 @@
 export default {
 	Ad: null,
-	Good: ENV.input.target == 'wxgame' ? typeof wx.createBannerAd === 'function' : false,
+	Good: ENV.target == 'wxgame' ? typeof wx.createBannerAd === 'function' : false,
 	Show(adUnitId) {
 		if (!this.Good) return Promise.reject('不支持Banner广告');
 		this.Hide();

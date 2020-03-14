@@ -1,12 +1,12 @@
 import * as Wxgame from '@icanvas/core-wxgame';
 function LoaderFactory() {
-	if (ENV.input.target != 'wxgame') return;
+	if (ENV.target != 'wxgame') return;
 	let FileManager = wx.getFileSystemManager();
 	let Apis = {
-		unzip: Wxgame.Vary('unzip', FileManager),
-		rmdir: Wxgame.Vary('rmdir', FileManager),
-		writeFile: Wxgame.Vary('writeFile', FileManager),
-		readFile: Wxgame.Vary('readFile', FileManager),
+		unzip: vary('unzip', FileManager),
+		rmdir: vary('rmdir', FileManager),
+		writeFile: vary('writeFile', FileManager),
+		readFile: vary('readFile', FileManager),
 	};
 	function Download(url, loaded) {
 		return new Promise((success, fail) => {
@@ -75,11 +75,11 @@ function LoaderFactory() {
 }
 export const Loader = LoaderFactory();
 export function Remote(url, loaded) {
-	if (ENV.dynamic.assetsUrl && Loader) return Loader(url, loaded);
+	if (ENV.assetsUrl && Loader) return Loader(url, loaded);
 	loaded(100);
 	return Promise.resolve({
 		assetsUrl: url,
-		resourceMap: ENV.dynamic.resource.remote,
+		resourceMap: ENV.resource.remote,
 	});
 }
 export class Progress extends GAME.Event {

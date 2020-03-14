@@ -1,0 +1,30 @@
+{
+	"name": "实战案例",
+	"targets": ["serve", "web", "wxgame", "wxgame/open", "oppo", "vivo"],
+	"qiniu": { "Url": "", "Key": "", "Secret": "", "Bucket": "" },
+	"input": { "wxgame/open": "src.open/index.js" },
+	"output": { "vivo": "/src/game.js", "wxgame": "/game.js" },
+	"clearfile": { "vivo": ["/dist", "/build", "/src"] },
+	"copyfile": {
+		"wxgame": {
+			"template/wxgame/game.json": "/game.json",
+			"template/wxgame/project.config.json": "/project.config.json",
+			"resource/local/": "/resource/local/",
+			"resource/remote/": { "type": "qiniu", "zip": true, "local": "/resource/remote/" }
+		},
+		"web": { "resource/": "/resource/" },
+		"oppo": { "resource/": "/resource/", "template/oppo/manifest.json": "/manifest.json" },
+		"vivo": { "resource/": "/src/resource/", "template/vivo/": "/" }
+	},
+	"options": {
+		"wxgame": ["/game.json", "/project.config.json"]
+	},
+	"dynamic": {
+		"wxgame": { "open": "open", "apps": [], "appid": "" }
+	},
+	"html": {
+		"serve": { "template/index.ejs": "/index.html" },
+		"web": { "template/index.ejs": "/index.html" },
+		"oppo": { "template/index.ejs": "/index.html" }
+	}
+}

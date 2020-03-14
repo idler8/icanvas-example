@@ -19,6 +19,7 @@ const Background = function() {
 export default class Load extends GAME.Container {
 	constructor(ResLoader) {
 		super().add(app.sprite('load/cloud'), this.Bar, this.Desc);
+		console.log('load');
 
 		this.on('loading', progress => {
 			console.log(progress.name, progress.progress);

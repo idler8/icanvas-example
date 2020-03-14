@@ -134,14 +134,15 @@ export default class Play extends GAME.Container {
 		this.Bullets.Slow = true;
 		this.Enemys.Slow = true;
 		this.on('create', function() {
-			app.audio.get('bgm').play();
-			app.audio.get('bgm').loop();
+			app.audio.get('bgm').play(true);
 			app.touch.on('touchStart', this.TouchStart, this);
 			app.touch.on('touchMove', this.TouchMove, this);
 			app.touch.on('touchEnd', this.TouchEnd, this);
 		});
 		this.on('destroy', function() {
 			app.audio.get('bgm').stop();
+			app.audio.get('bullet').destroy();
+			app.audio.get('boom').destroy();
 			app.touch.off('touchStart', this.TouchStart, this);
 			app.touch.off('touchMove', this.TouchMove, this);
 			app.touch.off('touchEnd', this.TouchEnd, this);

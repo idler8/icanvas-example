@@ -6,8 +6,12 @@ import '../plugins/components/text.js';
 //载入项目配置
 import Shared from '../plugins/shared.js';
 app.shared = new Shared();
+// import boardScene from './scenes/board.js';
+// import beforeScene from './scenes/before.js';
+// import rangeScene from './scenes/range.js';
+// app.stage.set(boardScene, beforeScene, rangeScene);
 
-app.resize(750); //初始化渲染器
+// app.resize(750); //初始化渲染器
 
 var Current = Promise.resolve(); //生成队列
 wx.onMessage(data => {
