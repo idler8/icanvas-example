@@ -46,7 +46,7 @@ class ScrollElement extends Core.Container {
 		return vector.x >= 0 && vector.y >= 0 && vector.x <= this.container.width && vector.y <= this.container.height;
 	}
 	touchTap(touch) {
-		let vector = touch.add(this.container.x, -this.container.y).multiplyMatrix4(this.container.matrix);
+		let vector = touch.clone().multiplyMatrix4(this.matrix);
 		app.collision.Recursive(this.container, vector);
 	}
 	touchMove(touch) {
