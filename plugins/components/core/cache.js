@@ -1,7 +1,7 @@
 import * as Core from '@icanvas/core';
 export default app.cache = function(container, options = {}) {
 	let sprite = new Core.Sprite(options);
-	sprite.texture = new Core.ImageSource(app.canvas());
+	sprite.texture = new Core.ImageSource(document.createElement('canvas'));
 	sprite.container = container;
 	let renderArray = [];
 	sprite.refresh = function(x, y) {

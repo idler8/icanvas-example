@@ -142,11 +142,11 @@ export default class Home extends GAME.Container {
 			console.log('Share');
 			// GAME.Reward('Home');
 		};
-		let audio = app.text({ size: 26, value: app.audio.muted() ? '声音:关' : '声音:开' }).put(this.Audio);
+		let audio = app.text({ size: 26, value: app.audio.muted ? '声音:关' : '声音:开' }).put(this.Audio);
 		this.Audio.touchTap = () => {
 			console.log('Audio');
-			app.audio.muted(!app.audio.muted());
-			audio.value = app.audio.muted() ? '声音:关' : '声音:开';
+			app.audio.muted = !app.audio.muted;
+			audio.value = app.audio.muted ? '声音:关' : '声音:开';
 			return 'refresh';
 		};
 		this.add(this.Background);

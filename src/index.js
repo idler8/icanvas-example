@@ -1,8 +1,8 @@
 //挂载组件生成器
-import '../plugins/components/sprite.js';
-import '../plugins/components/scroll.js';
-import '../plugins/components/text.js';
-// import '../plugins/components/cache.js';
+import '../plugins/components/core/sprite.js';
+import '../plugins/components/core/scroll.js';
+import '../plugins/components/core/text.js';
+// import '../plugins/components/core/cache.js';
 // 挂载场景
 import loadScene from './scenes/load.js';
 import homeScene from './scenes/home.js';
@@ -12,9 +12,9 @@ app.stage.set('Home', homeScene);
 import Database from '../plugins/database.js';
 app.data = new Database('global_' + ENV.mode);
 app.data.Map('Setting').Merge({ Audio: true, Shock: true });
-//开放域
-// import Shared from '../plugins/wechat/shared.js';
-// GAME.Shared = Shared.SetSize(750, 750 / GAME.System.ratio);
+//开放域加载
+import Shared from '../plugins/components/shared.js';
+if (ENV.target == 'wxgame') app.shared = Shared();
 //初始化项目
 app.run({ width: 750, interval: 1000 / 60 });
 
@@ -28,14 +28,12 @@ Promise.all([
 		app.data
 			.Map('Setting')
 			.GetStorage(true)
-			.then(() => app.audio.muted(!app.data.Map('Setting').Get('Audio'))), //读取声音配置
-	]),
-	// .then(() => app.stage.go(new loadScene(ResLoader))),
+			.then(() => (app.audio.muted = !app.data.Map('Setting').Get('Audio'))), //读取声音配置
+	]).then(() => app.stage.go(new loadScene(ResLoader))),
 	Promise.resolve(ResLoader.add('资源包下载', 100))
 		.then(DownloadLoader => Loader.Remote(ENV.assetsUrl || 'resource/remote', progress => (DownloadLoader.current = progress)))
 		.then(res => {
 			console.log('得到远程资源路径', res);
-			// GAME.Shared.Send({ resource: GAME.Image.loadMap(res.resourceMap.rank, res.assetsUrl + '/rank/', '', ['png', 'jpg']) });
 			let images = Loader.loadMap(res.resourceMap, res.assetsUrl + '/', '', ['png', 'jpg']);
 			let ImageLoader = ResLoader.add('图片预读', Object.keys(images).length);
 			let audios = Loader.loadMap(res.resourceMap.audio, res.assetsUrl + '/audio/', '', ['mp3']);

@@ -52,8 +52,8 @@ class ScrollElement extends Core.Container {
 	touchMove(touch) {
 		let vector = touch.clone();
 		if (!this.checkPoint(vector.multiplyMatrix4(app.stage.matrix))) return;
-		this.container.touchMoveX(touch.tick.x);
-		this.container.touchMoveY(touch.tick.y);
+		this.container.touchMoveX(touch.step.x);
+		this.container.touchMoveY(touch.step.y);
 	}
 	render(gl, dirty) {
 		let { x, y } = this.getWorldVector(new Core.Vector3());

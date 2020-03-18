@@ -1,13 +1,6 @@
-import * as Wxgame from '@icanvas/core-wxgame';
 function LoaderFactory() {
 	if (ENV.target != 'wxgame') return;
 	let FileManager = wx.getFileSystemManager();
-	let Apis = {
-		unzip: vary('unzip', FileManager),
-		rmdir: vary('rmdir', FileManager),
-		writeFile: vary('writeFile', FileManager),
-		readFile: vary('readFile', FileManager),
-	};
 	function Download(url, loaded) {
 		return new Promise((success, fail) => {
 			wx.downloadFile({ url, success, fail }).onProgressUpdate(res => loaded(res.progress));
@@ -24,31 +17,47 @@ function LoaderFactory() {
 			});
 	}
 	function UnZip(zipFilePath, url) {
-		return Apis.unzip({
-			zipFilePath,
-			targetPath: wx.env.USER_DATA_PATH + '/' + encodeURIComponent(url),
+		return new Promise(function(success, fail) {
+			FileManager.unzip({
+				zipFilePath,
+				targetPath: wx.env.USER_DATA_PATH + '/' + encodeURIComponent(url),
+				success,
+				fail,
+			});
 		});
 	}
 	function Remove(url) {
 		if (!url) return Promise.resolve();
-		return Apis.rmdir({
-			dirPath: wx.env.USER_DATA_PATH + '/' + encodeURIComponent(url),
-			recursive: true,
+		return new Promise(function(success, fail) {
+			FileManager.rmdir({
+				dirPath: wx.env.USER_DATA_PATH + '/' + encodeURIComponent(url),
+				recursive: true,
+				success,
+				fail,
+			});
 		}).catch(e => {
 			if (!e.errMsg) return;
 			if (e.errMsg.indexOf('fail no such file or directory') >= 0) return;
 		});
 	}
 	function WriteStorage(key, json) {
-		return Apis.writeFile({
-			filePath: wx.env.USER_DATA_PATH + '/' + key,
-			data: JSON.stringify(json),
+		return new Promise(function(success, fail) {
+			FileManager.writeFile({
+				filePath: wx.env.USER_DATA_PATH + '/' + key,
+				data: JSON.stringify(json),
+				success,
+				fail,
+			});
 		});
 	}
 	function ReadStorage(key) {
-		return Apis.readFile({
-			filePath: wx.env.USER_DATA_PATH + '/' + key,
-			encoding: 'utf8',
+		return new Promise(function(success, fail) {
+			FileManager.readFile({
+				filePath: wx.env.USER_DATA_PATH + '/' + key,
+				encoding: 'utf8',
+				success,
+				fail,
+			});
 		})
 			.then(res => JSON.parse(res.data) || {})
 			.catch(res => ({}));

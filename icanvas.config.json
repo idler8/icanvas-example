@@ -20,7 +20,44 @@
 		"wxgame": ["/game.json", "/project.config.json"]
 	},
 	"dynamic": {
-		"wxgame": { "open": "open", "apps": [], "appid": "" }
+		"wxgame": { "open": "open", "apps": [], "appid": "" },
+		"wxgame/open": { "findKeys": ["score"], "sortKeys": ["score"], "test": "forEach" }
+	},
+	"inject": {
+		"serve": {
+			"axios": "axios",
+			"GAME": ["./template/core.js", "GAME"],
+			"app": ["./template/core.js", "app"]
+		},
+		"web": {
+			"axios": "axios",
+			"GAME": ["./template/core.js", "GAME"],
+			"app": ["./template/core.js", "app"]
+		},
+		"wxgame": {
+			"Audio": "./template/wxgame/inject/audio.js",
+			"Image": "./template/wxgame/inject/image.js",
+			"document": "./template/wxgame/inject/document.js",
+			"addEventListener": "./template/wxgame/inject/listener.js",
+			"axios": "./template/wxgame/inject/axios.js",
+			"GAME": ["./template/core.js", "GAME"],
+			"app": ["./template/core.js", "app"]
+		},
+		"wxgame/open": {
+			"Image": "./template/wxgame/inject/image.js",
+			"document": "./template/wxgame/inject/document.js",
+			"addEventListener": "./template/wxgame/inject/listener.js",
+			"GAME": ["./template/core.js", "GAME"],
+			"app": ["./template/core.js", "app"]
+		},
+		"vivo": {
+			"GAME": ["./template/core.js", "GAME"],
+			"app": ["./template/core.js", "app"]
+		},
+		"oppo": {
+			"GAME": ["./template/core.js", "GAME"],
+			"app": ["./template/core.js", "app"]
+		}
 	},
 	"html": {
 		"serve": { "template/index.ejs": "/index.html" },

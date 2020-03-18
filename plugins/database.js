@@ -1,24 +1,32 @@
-import * as Wxgame from '@icanvas/core-wxgame';
-let DelStorage =
-	ENV.target == 'wxgame'
-		? vary('removeStorage')
-		: function(key) {
-				window.localStorage.removeItem(key);
-				return Promise.resolve();
-		  };
-let GetStorage =
-	ENV.target == 'wxgame'
-		? vary('getStorage')
-		: function(key) {
-				return Promise.resolve({ data: window.localStorage.getItem(key) });
-		  };
-let SetStorage =
-	ENV.target == 'wxgame'
-		? vary('setStorage')
-		: function({ key, data }) {
-				window.localStorage.setItem(key, data);
-				return Promise.resolve();
-		  };
+let DelStorage = function(key) {
+	if (ENV.target == 'wxgame') {
+		return new Promise(function(resolve, reject) {
+			wx.removeStorage({ key, success: resolve, fail: reject });
+		});
+	} else {
+		window.localStorage.removeItem(key);
+		return Promise.resolve();
+	}
+};
+let GetStorage = function(key) {
+	if (ENV.target == 'wxgame') {
+		return new Promise(function(resolve, reject) {
+			wx.getStorage({ key, success: resolve, fail: reject });
+		});
+	} else {
+		return Promise.resolve({ data: window.localStorage.getItem(key) });
+	}
+};
+let SetStorage = function(key, data) {
+	if (ENV.target == 'wxgame') {
+		return new Promise(function(resolve, reject) {
+			wx.setStorage({ key, data, success: resolve, fail: reject });
+		});
+	} else {
+		window.localStorage.setItem(key, data);
+		return Promise.resolve();
+	}
+};
 export class Table {
 	Name = 'default_default';
 	constructor(database = 'default', table = 'default') {
@@ -49,12 +57,12 @@ export class Table {
 		return this;
 	}
 	Execute(Callback) {
-		let Res = Callback(this.Data, this);
+		let Res = Callback.call(this, this.Data);
 		if (Res) this.Data = Res;
 		return this;
 	}
 	SetStorage() {
-		return SetStorage({ key: this.Name, data: this.GetString() }).then(() => this.Data);
+		return SetStorage(this.Name, this.GetString()).then(() => this.Data);
 	}
 	GetStorage(merge) {
 		return GetStorage(this.Name, 'key')

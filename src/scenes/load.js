@@ -1,6 +1,6 @@
 const Background = function() {
 	if (Background.Instance) return Background.Instance;
-	let Context = app.canvas().getContext('2d');
+	let Context = document.createElement('canvas').getContext('2d');
 	Context.SetSize(36, 36);
 	Context.fillStyle = '#FDC600';
 	Context.fillRect(0, 0, 36, 36);

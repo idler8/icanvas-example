@@ -173,7 +173,7 @@ class RichText extends Core.Sprite {
 	refresh = this.preUpdate;
 }
 export default app.text = function(font, options = {}) {
-	options.texture = new Core.ImageSource(app.canvas());
+	options.texture = new Core.ImageSource(document.createElement('canvas'));
 	options.text = new RichAttrs(font);
 	let text = new RichText(options);
 	text.value = font.value || '';

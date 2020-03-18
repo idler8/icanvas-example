@@ -5,10 +5,11 @@ import pinyin from 'node-pinyin';
 
 import qiniu from 'rollup-plugin-qiniu';
 import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import inject from '@rollup/plugin-inject';
 import json from 'rollup-plugin-json5';
 import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import inject from 'rollup-plugin-inject';
+// import replace from './icanvas/replace.js';
 import replace from 'rollup-plugin-replace-ast';
 import { terser } from 'rollup-plugin-terser';
 import htmlTemplate from 'rollup-plugin-generate-html-template';
@@ -113,6 +114,18 @@ function MergePlugin(target, dynamic) {
 		console.log(('补充配置项：' + key + '  ->  ' + jsonString).cyan);
 	});
 }
+function InjectPlugin(target, dynamic) {
+	if (!target) return;
+	let modules = {};
+	Object.keys(target).forEach(function(a) {
+		if (target[a] instanceof Array) {
+			modules[a] = [target[a][0][0] == '.' ? path.resolve(target[a][0]) : target[a][0], target[a][1]];
+		} else {
+			modules[a] = target[a][0] == '.' ? path.resolve(target[a]) : target[a];
+		}
+	});
+	return modules;
+}
 function DeleteInput(args, input) {
 	if (!args.input) return JSON.parse(JSON.stringify(input));
 	let result = JSON.parse(JSON.stringify(args.input));
@@ -133,6 +146,7 @@ export default function rollupOptionBuilder(args, input) {
 	ClearPlugin(project.clearfile[dynamic.target], dynamic);
 	let remotes = CopyPlugin(project.copyfile[dynamic.target], dynamic, project.qiniu, input.qiniu, input.upload);
 	OptionsPlugin(project.options[dynamic.target], dynamic);
+	let injects = InjectPlugin(project.inject[dynamic.target], dynamic);
 	let plugins = [
 		resolve({ preferBuiltins: true, browser: true }),
 		json(),
@@ -146,9 +160,8 @@ export default function rollupOptionBuilder(args, input) {
 		}),
 		commonjs(),
 		inject({
-			exclude: ['node_modules/**', 'template/**'],
-			GAME: [path.resolve('template/core.js'), 'GAME'],
-			app: [path.resolve('template/core.js'), 'app'],
+			// exclude: ['node_modules/**'],
+			modules: injects,
 		}),
 		replace(dynamic),
 	];
@@ -177,5 +190,6 @@ export default function rollupOptionBuilder(args, input) {
 	};
 	if (!dynamic.open) return rollupOption;
 	input.target = 'wxgame/open';
+	input.webgl = false;
 	return [rollupOption, rollupOptionBuilder(args, input)];
 }
