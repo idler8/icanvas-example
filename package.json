@@ -9,7 +9,7 @@
 		"web": "rollup -c -- target=web"
 	},
 	"dependencies": {
-		"@icanvas/core": "^3.0.78",
+		"@icanvas/core": "^3.0.79",
 		"axios": "^0.19.2",
 		"qs": "^6.9.1",
 		"stats-js": "^1.0.1",
